@@ -14,7 +14,7 @@ run_tests: ./source/run_tests.cpp ./buildfiles/PCA9685driver.o
 	g++ -std=c++0x -c ./source/PCA9685driver.cpp -o ./buildfiles/PCA9685driver.o
 
 clean:
-	rm -f ./buildfiles/*
-	rm -f ./bin/*
-	rm -f ./lib/*
+	for f in $$(ls ./buildfiles); do rm ./buildfiles/$$f; done
+	for f in $$(ls ./bin); do rm ./bin/$$f; done
+	for f in $$(ls ./lib); do rm ./lib/$$f; done
 
