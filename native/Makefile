@@ -1,23 +1,17 @@
-all: run_tests library
+all: library run_tests
 
 
 library: ./source/PCA9685driver.cpp ./source/PCA9685driver.h
-	mkdir -p ./buildfiles ./lib
-	g++ -Wall -std=c++0x -fPIC -c ./source/PCA9685driver.cpp -o ./buildfiles/pwm_rest.o
-	g++ -std=c++0x -shared -Wl,-soname,libpwm_rest.so.1 -o ./lib/libpwm_rest.so.1.0 ./buildfiles/pwm_rest.o
+	mkdir -p ./lib
+	g++ -Wall -std=c++0x -fPIC -shared ./source/PCA9685driver.cpp -o ./lib/libpwm_rest.so
 
 
-run_tests: ./source/run_tests.cpp ./buildfiles/PCA9685driver.o
-	mkdir -p ./buildfiles ./bin
-	g++ -std=c++0x -c ./source/run_tests.cpp -o buildfiles/run_tests.o
-	g++ -std=c++0x buildfiles/run_tests.o buildfiles/PCA9685driver.o -o ./bin/run_tests
+run_tests: ./source/run_tests.cpp
+	mkdir -p ./bin
+	g++ -std=c++0x -o ./bin/run_tests -Wl,-rpath=../lib:./lib:./native./lib ./source/run_tests.cpp -L./lib -lpwm_rest
 
-./buildfiles/PCA9685driver.o: ./source/PCA9685driver.cpp ./source/PCA9685driver.h
-	mkdir -p ./buildfiles
-	g++ -std=c++0x -c ./source/PCA9685driver.cpp -o ./buildfiles/PCA9685driver.o
 
 clean:
-	for f in $$(ls ./buildfiles); do rm ./buildfiles/$$f; done
 	for f in $$(ls ./bin); do rm ./bin/$$f; done
 	for f in $$(ls ./lib); do rm ./lib/$$f; done
 

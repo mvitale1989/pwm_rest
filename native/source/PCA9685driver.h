@@ -51,6 +51,7 @@ public:
 	bool set_all_PWM(int on,int off);
 	void dump_memory();
 	void test();
+	void print_test();
 };
 
 #endif /* PCA9685DRIVER_H_ */

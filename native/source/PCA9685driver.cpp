@@ -175,3 +175,7 @@ void PCA9685driver::test(){
 	}
 	if(debug) std::cout<<"\nTest completed.\n";
 }
+
+void PCA9685driver::print_test(){
+	std::cout<<"Dynamic library loading successful."<<std::endl;
+}
