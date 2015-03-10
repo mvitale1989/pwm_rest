@@ -1,17 +1,10 @@
-all: library run_tests
+JHOME = $(shell readlink -f $$(which java) | rev | cut -d/ -f-3 --complement | rev )
 
+all: lib/libbbi2c.so
 
-library: ./source/PCA9685driver.cpp ./source/PCA9685driver.h
-	mkdir -p ./lib
-	g++ -Wall -std=c++0x -fPIC -shared ./source/PCA9685driver.cpp -o ./lib/libpwm_rest.so
-
-
-run_tests: ./source/run_tests.cpp
-	mkdir -p ./bin
-	g++ -std=c++0x -o ./bin/run_tests -Wl,-rpath=../lib:./lib:./native./lib ./source/run_tests.cpp -L./lib -lpwm_rest
-
+lib/libbbi2c.so: src/it_binarybrain_hw_I2CDriver.h src/it_binarybrain_hw_I2CDriver.c
+	mkdir -p lib
+	g++ -fPIC -shared -I$(JHOME)/include -I$(JHOME)/include/linux src/it_binarybrain_hw_I2CDriver.c -o lib/libbbi2c.so
 
 clean:
-	for f in $$(ls ./bin); do rm ./bin/$$f; done
-	for f in $$(ls ./lib); do rm ./lib/$$f; done
-
+	rm -rf lib
