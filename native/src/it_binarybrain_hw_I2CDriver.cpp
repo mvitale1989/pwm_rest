@@ -50,27 +50,34 @@ JNIEXPORT jint JNICALL Java_it_binarybrain_hw_I2CDriver_openFileDescriptor
 }
 
 
+JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_closeFileDescriptor
+  (JNIEnv * env, jobject obj, jint fileDescriptor){
+	int fd=fileDescriptor;
+	close(fd);
+}
+
+
 JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_writeByte
-  (JNIEnv * env, jobject obj, jbyte address_arg, jbyte value_arg)
+  (JNIEnv * env, jobject obj, jint fileDescriptor, jbyte address_arg, jbyte value_arg)
 {
 	unsigned char address = address;
 	unsigned char value = value_arg;
-	printf("WRITING BYTE %02x to address %02x\n",value,address);
-//        if(i2c_file_descriptor<0)
-//                throw std::exception();
-//        return i2c_smbus_write_byte_data(i2c_file_descriptor,register_address,value);
+	std::cout<<"[native] writing byte "<<value<<" to address "<<address<<"...\n";
+	if(fileDescriptor<0)
+		throw std::exception();
+	i2c_smbus_write_byte_data(fileDescriptor,address,value);
 }
 
 
 JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_readByte
-  (JNIEnv * env, jobject obj, jbyte address)
+  (JNIEnv * env, jobject obj, jint fileDescriptor, jbyte address)
 {
-	jbyte read_value=0x1f;
-	printf("Trying read from %02x...\n",address);
+	jbyte read_value=0;
+	printf("Trying read from %02x, from file descriptor...\n",address);
+	if(fileDescriptor<0)
+		throw std::exception();
+	read_value = i2c_smbus_read_byte_data(fileDescriptor,address);
 	return read_value;
-//        if(i2c_file_descriptor<0)
-//                throw std::exception();
-//        return i2c_smbus_read_byte_data(i2c_file_descriptor,register_address);
 }
 
 

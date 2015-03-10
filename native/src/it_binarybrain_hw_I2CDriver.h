@@ -17,19 +17,27 @@ JNIEXPORT jint JNICALL Java_it_binarybrain_hw_I2CDriver_openFileDescriptor
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
+ * Method:    closeFileDescriptor
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_closeFileDescriptor
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     it_binarybrain_hw_I2CDriver
  * Method:    writeByte
- * Signature: (BB)V
+ * Signature: (IBB)V
  */
 JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_writeByte
-  (JNIEnv *, jobject, jbyte, jbyte);
+  (JNIEnv *, jobject, jint, jbyte, jbyte);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
  * Method:    readByte
- * Signature: (B)B
+ * Signature: (IB)B
  */
 JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_readByte
-  (JNIEnv *, jobject, jbyte);
+  (JNIEnv *, jobject, jint, jbyte);
 
 #ifdef __cplusplus
 }
