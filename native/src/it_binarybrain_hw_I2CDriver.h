@@ -10,34 +10,34 @@ extern "C" {
 /*
  * Class:     it_binarybrain_hw_I2CDriver
  * Method:    openFileDescriptor
- * Signature: (Ljava/lang/String;IZ)I
+ * Signature: (Ljava/lang/String;I)I
  */
 JNIEXPORT jint JNICALL Java_it_binarybrain_hw_I2CDriver_openFileDescriptor
-  (JNIEnv *, jobject, jstring, jint, jboolean);
+  (JNIEnv *, jobject, jstring, jint);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
  * Method:    closeFileDescriptor
- * Signature: (IZ)V
+ * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_closeFileDescriptor
-  (JNIEnv *, jobject, jint, jboolean);
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
  * Method:    writeByte
- * Signature: (IBBZ)V
+ * Signature: (IBB)V
  */
 JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_writeByte
-  (JNIEnv *, jobject, jint, jbyte, jbyte, jboolean);
+  (JNIEnv *, jobject, jint, jbyte, jbyte);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
  * Method:    readByte
- * Signature: (IBZ)B
+ * Signature: (IB)B
  */
 JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_readByte
-  (JNIEnv *, jobject, jint, jbyte, jboolean);
+  (JNIEnv *, jobject, jint, jbyte);
 
 #ifdef __cplusplus
 }

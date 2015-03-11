@@ -1,8 +1,6 @@
 package it.binarybrain.hw;
-import it.binarybrain.hw.I2CDriver.DeviceNotOpenException;
-import it.binarybrain.hw.I2CDriver.I2CDriverException;
-
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class I2CTester {
 
@@ -22,8 +20,12 @@ public class I2CTester {
 				System.out.println("Read byte at address "+Integer.toHexString(i)+": "+Integer.toHexString(read));
 			}
 			System.out.println("\nTESTING SUCCESSFUL\n\n");
-		}catch(FileNotFoundException | DeviceNotOpenException | I2CDriverException e){
+		}catch(FileNotFoundException | IllegalStateException e){
 			e.printStackTrace();
+		}finally{
+			try{
+				i2c.close();
+			}catch(IOException e){}
 		}
 	}
 
