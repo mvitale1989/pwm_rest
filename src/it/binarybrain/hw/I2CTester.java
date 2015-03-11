@@ -1,5 +1,6 @@
 package it.binarybrain.hw;
 import it.binarybrain.hw.I2CDriver.DeviceNotOpenException;
+import it.binarybrain.hw.I2CDriver.I2CDriverException;
 
 import java.io.FileNotFoundException;
 
@@ -17,11 +18,11 @@ public class I2CTester {
 			i2c.init("/dev/i2c-1",(byte)0x40);
 			System.out.println("Beginning memory dump of the first 16 bytes...");
 			for(int i=0;i<16;i++){
-				byte read=i2c.readByte((byte)i);
-				System.out.println("Read byte at address "+Integer.toString(i)+": "+Byte.toString(read));
+				int read=( i2c.readByte((byte)i) &0xFF);
+				System.out.println("Read byte at address "+Integer.toHexString(i)+": "+Integer.toHexString(read));
 			}
 			System.out.println("\nTESTING SUCCESSFUL\n\n");
-		}catch(FileNotFoundException | DeviceNotOpenException e){
+		}catch(FileNotFoundException | DeviceNotOpenException | I2CDriverException e){
 			e.printStackTrace();
 		}
 	}

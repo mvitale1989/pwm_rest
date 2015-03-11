@@ -11,6 +11,8 @@ extern "C" {
 #define it_binarybrain_hw_I2CDriver_DeviceNotOpenException_serialVersionUID -3042686055658047285LL
 #undef it_binarybrain_hw_I2CDriver_DeviceNotOpenException_serialVersionUID
 #define it_binarybrain_hw_I2CDriver_DeviceNotOpenException_serialVersionUID -3387516993124229948LL
+#undef it_binarybrain_hw_I2CDriver_DeviceNotOpenException_serialVersionUID
+#define it_binarybrain_hw_I2CDriver_DeviceNotOpenException_serialVersionUID 7827078331011336573LL
 #ifdef __cplusplus
 }
 #endif
