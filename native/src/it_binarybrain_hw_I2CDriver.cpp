@@ -60,7 +60,7 @@ JNIEXPORT jint JNICALL Java_it_binarybrain_hw_I2CDriver_nativeOpenDeviceFile
 	  //Bolierplate per l'accesso alle variabili istanza nativeExitCode, debug e i2cFileDescriptor
 	jfieldID exit_code_fid = env->GetFieldID( env->GetObjectClass(obj), "nativeExitCode", "I"); assert(exit_code_fid != NULL);
 	jfieldID debug_fid = env->GetFieldID( env->GetObjectClass(obj), "debug", "Z"); assert(debug_fid != NULL);
-	jfieldID i2c_file_descriptor_fid = env->GetFieldID( env->GetObjectClass(obj), "i2cFileDescriptor", "Z"); assert(i2c_file_descriptor_fid!=NULL);
+	jfieldID i2c_file_descriptor_fid = env->GetFieldID( env->GetObjectClass(obj), "i2cFileDescriptor", "I"); assert(i2c_file_descriptor_fid!=NULL);
 
 	//Codice funzionale
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
@@ -83,7 +83,7 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_nativeWriteByte
 	  //Bolierplate per l'accesso alle variabili istanza nativeExitCode, debug e i2cFileDescriptor
 	jfieldID exit_code_fid = env->GetFieldID( env->GetObjectClass(obj), "nativeExitCode", "I");	assert(exit_code_fid != NULL);
 	jfieldID debug_fid = env->GetFieldID( env->GetObjectClass(obj), "debug", "Z"); assert(debug_fid != NULL);
-	jfieldID i2c_file_descriptor_fid = env->GetFieldID( env->GetObjectClass(obj), "i2cFileDescriptor", "Z"); assert(i2c_file_descriptor_fid!=NULL);
+	jfieldID i2c_file_descriptor_fid = env->GetFieldID( env->GetObjectClass(obj), "i2cFileDescriptor", "I"); assert(i2c_file_descriptor_fid!=NULL);
 
 	//Codice funzionale
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
@@ -109,19 +109,19 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_nativeWriteByte
 }
 
 
-JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_readByte
+JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_nativeReadByte
   (JNIEnv * env, jobject obj, jbyte i2c_address)
 {
 	//Bolierplate per l'accesso alle variabili istanza nativeExitCode, debug e i2cFileDescriptor
 	jfieldID exit_code_fid = env->GetFieldID( env->GetObjectClass(obj), "nativeExitCode", "I");	assert(exit_code_fid != NULL);
 	jfieldID debug_fid = env->GetFieldID( env->GetObjectClass(obj), "debug", "Z"); assert(debug_fid != NULL);
-	jfieldID i2c_file_descriptor_fid = env->GetFieldID( env->GetObjectClass(obj), "i2cFileDescriptor", "Z"); assert(i2c_file_descriptor_fid!=NULL);
+	jfieldID i2c_file_descriptor_fid = env->GetFieldID( env->GetObjectClass(obj), "i2cFileDescriptor", "I"); assert(i2c_file_descriptor_fid!=NULL);
 
 	//Codice funzionale
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
 	jint read_value=0;
 	jint i2c_file_descriptor=env->GetIntField(obj,i2c_file_descriptor_fid);
-	std::cout<<"Trying read from "<<i2c_address<<" from file descriptor...";
+	std::cout<<"Trying read from "<<std::hex<<(int)i2c_address<<" from file descriptor...";
 	if(i2c_file_descriptor<0){
 		std::cout<<"error (I2C file descriptor not open. Did you call init?)"<<std::endl;
 		env->SetIntField(obj,exit_code_fid,-1);
