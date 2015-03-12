@@ -12,10 +12,10 @@ public class I2CDriver implements Closeable {
 
 	//public class DeviceNotOpenException extends Exception{ private static final long serialVersionUID = 7827078331011336573L; }
 	//public class I2CDriverException extends Exception{ private static final long serialVersionUID = -2926408543711449468L; }
-	private native int openFileDescriptor(String i2cDevicePath,int deviceAddress);
-	private native void closeFileDescriptor(int fileDescriptor);
-	private native void writeByte(int fileDescriptor,byte address,byte value);
-	private native byte readByte(int fileDescriptor,byte address);
+	private native int nativeOpenDeviceFile(String i2cDevicePath,int deviceAddress);
+	private native void nativeCloseDeviceFile();
+	private native void nativeWriteByte(byte address,byte value);
+	private native byte nativeReadByte(byte address);
 	static{
 		System.loadLibrary("bbi2c");
 	}
@@ -35,42 +35,35 @@ public class I2CDriver implements Closeable {
 	/*
 	 * DRIVER METHODS
 	 */
-	public void init(String i2cDevicePath,int deviceAddress) throws FileNotFoundException {
-		/*File i2cDeviceFile = new File(i2cDevicePath);
-		if(!i2cDeviceFile.exists())
-			throw new FileNotFoundException();*/
-		i2cFileDescriptor=openFileDescriptor(i2cDevicePath,deviceAddress);
+	public void init(String i2cDevicePath,int deviceAddress) throws IOException {
+		i2cFileDescriptor=nativeOpenDeviceFile(i2cDevicePath,deviceAddress);
 		if(nativeExitCode!=0){
-			System.err.println("ERRORE. NAtiveExitCode: "+Integer.toString(nativeExitCode));
 			i2cFileDescriptor=-1;
-			throw new FileNotFoundException();
+			throw new IOException();
 		}
 	}
 	
 	@Override
 	public void close() throws IOException {
 		if(i2cFileDescriptor>=0)
-			closeFileDescriptor(i2cFileDescriptor);
+			nativeCloseDeviceFile();
 	}
 	
-	public void writeByte(byte address,byte value) {
+	public void writeByte(byte address,byte value)throws IOException {
 		if(i2cFileDescriptor<0)
 			throw new IllegalStateException("attempted write on a not yet initialized i2c device.");
-		writeByte(i2cFileDescriptor,address,value);
-		if(nativeExitCode!=0){
-			System.err.println("write error.");
-		}
+		nativeWriteByte(address,value);
+		if(nativeExitCode!=0)
+			throw new IOException();
 	}
 	
-	public byte readByte(byte address)  {
+	public byte readByte(byte address) throws IOException {
 		byte readValue;
 		if(i2cFileDescriptor<0)
 			throw new IllegalStateException("attempted read on a not yet initialized i2c device.");
-		readValue = readByte(i2cFileDescriptor,address);
-		if(nativeExitCode!=0){
-			System.err.println("read error.");
-			return 0;
-		}
+		readValue = nativeReadByte(address);
+		if(nativeExitCode!=0)
+			throw new IOException();
 		return readValue;
 	}
 }

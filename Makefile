@@ -5,10 +5,8 @@ dependency_check:
 	@scripts/check_dependencies.sh
 
 
-
 driver: bin/it/binarybrain/hw/I2CDriver.class
 tester: bin/it/binarybrain/hw/I2CTester.class
-
 
 bin/it/binarybrain/hw/I2CDriver.class: src/it/binarybrain/hw/I2CDriver.java
 	mkdir -p bin
@@ -16,8 +14,6 @@ bin/it/binarybrain/hw/I2CDriver.class: src/it/binarybrain/hw/I2CDriver.java
 bin/it/binarybrain/hw/I2CTester.class: src/it/binarybrain/hw/I2CTester.java
 	mkdir -p bin
 	javac -classpath src -d bin src/it/binarybrain/hw/I2CTester.java
-
-
 
 
 

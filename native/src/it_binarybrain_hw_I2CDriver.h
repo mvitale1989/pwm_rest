@@ -9,35 +9,35 @@ extern "C" {
 #endif
 /*
  * Class:     it_binarybrain_hw_I2CDriver
- * Method:    openFileDescriptor
+ * Method:    nativeOpenDeviceFile
  * Signature: (Ljava/lang/String;I)I
  */
-JNIEXPORT jint JNICALL Java_it_binarybrain_hw_I2CDriver_openFileDescriptor
+JNIEXPORT jint JNICALL Java_it_binarybrain_hw_I2CDriver_nativeOpenDeviceFile
   (JNIEnv *, jobject, jstring, jint);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
- * Method:    closeFileDescriptor
- * Signature: (I)V
+ * Method:    nativeCloseDeviceFile
+ * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_closeFileDescriptor
-  (JNIEnv *, jobject, jint);
+JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_nativeCloseDeviceFile
+  (JNIEnv *, jobject);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
- * Method:    writeByte
- * Signature: (IBB)V
+ * Method:    nativeWriteByte
+ * Signature: (BB)V
  */
-JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_writeByte
-  (JNIEnv *, jobject, jint, jbyte, jbyte);
+JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_nativeWriteByte
+  (JNIEnv *, jobject, jbyte, jbyte);
 
 /*
  * Class:     it_binarybrain_hw_I2CDriver
- * Method:    readByte
- * Signature: (IB)B
+ * Method:    nativeReadByte
+ * Signature: (B)B
  */
-JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_readByte
-  (JNIEnv *, jobject, jint, jbyte);
+JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_I2CDriver_nativeReadByte
+  (JNIEnv *, jobject, jbyte);
 
 #ifdef __cplusplus
 }
