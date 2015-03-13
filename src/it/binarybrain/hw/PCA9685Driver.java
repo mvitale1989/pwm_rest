@@ -25,7 +25,7 @@ public class PCA9685Driver {
 	static final int BIT_OUTDRV = 0x04;
 
 	I2CDriver driver=null;
-	boolean initializationCalled=false;
+	boolean initialized=false;
 	boolean debug=false;
 	
 	public PCA9685Driver(I2CDriver driverArg,boolean debugArg){
@@ -34,72 +34,31 @@ public class PCA9685Driver {
 	}
 	
 	public void init() throws IOException {
-		/*bool PCA9685driver::init_device(){
-        	bool success=false;
-        	try{
-                	if(debug) std::cout<<"Initializing device....";
-                	set_all_PWM(0, 0);
-                	write_byte(REG_MODE2,BIT_OUTDRV);
-                	write_byte(REG_MODE1,BIT_ALLCALL);
-                	usleep(5000);//wait for oscillator
-                	unsigned char mode1 = read_byte(REG_MODE1);
-                	mode1 = mode1 & ~BIT_SLEEP;//wake up (reset sleep)
-                	write_byte(REG_MODE1, mode1);
-                	usleep(5000);//wait for oscillator
-                	if(debug) std::cout<<"complete.";
-                	success=true;
-        	}catch(std::exception& e){
-                	std::cout<<e.what()<<std::endl;
-        	}
-        	std::cout<<std::endl;
-    		return success;
-			}
-		 	*/
-		initializationCalled=true;
-		if(debug)
-			System.out.print("Initializing device...");
-		setAllPWMSteps(0, 0);
-		driver.writeByte( (byte)(REG_MODE2), (byte)(BIT_OUTDRV) );
-		driver.writeByte( (byte)(REG_MODE1), (byte)(BIT_ALLCALL) );
+		initialized=true;
 		try{
-			Thread.sleep(5);//wait for oscillator
-		}catch(InterruptedException e){}
-		int mode1=driver.readByte((byte)REG_MODE1);
-		mode1=mode1 & ~BIT_SLEEP;//wake up, reset sleep
-		driver.writeByte((byte)REG_MODE1,(byte)mode1);
-		try{
-			Thread.sleep(5);//wait for oscillator
-		}catch(InterruptedException e){}
-		if(debug)
-			System.out.println("success.");
+			if(debug)
+				System.out.print("Initializing device...");
+			setAllPWMSteps(0, 0);
+			driver.writeByte( (byte)(REG_MODE2), (byte)(BIT_OUTDRV) );
+			driver.writeByte( (byte)(REG_MODE1), (byte)(BIT_ALLCALL) );
+			try{
+				Thread.sleep(5);//wait for oscillator
+			}catch(InterruptedException e){}
+			int mode1=driver.readByte((byte)REG_MODE1);
+			mode1=mode1 & ~BIT_SLEEP;//wake up, reset sleep
+			driver.writeByte((byte)REG_MODE1,(byte)mode1);
+			try{
+				Thread.sleep(5);//wait for oscillator
+			}catch(InterruptedException e){}
+			if(debug)
+				System.out.println("success.");
+		}catch(IOException e){
+			initialized=false;
+			throw new IOException(e.getMessage());
+		}
 	}
 	
 	public void setPWMFrequency(int hertz) throws IOException {
-		/*
-		 * 	bool success=false;
-	try{
-	    int prescale = 25000000;//25MHz
-	    prescale /= 4096;//12-bit
-	    prescale /= hertz;
-	    prescale -= 1;
-	    if (debug){
-	      std::cout<<"Setting PWM frequency to "<<hertz<<"Hz; ";
-	      std::cout<<"estimated pre-scale: "<<prescale<<". Sending commands...";
-	    }
-	    int oldmode = read_byte(REG_MODE1);
-	    int newmode = (oldmode & 0x7F) | 0x10;//sleep
-	    write_byte(REG_MODE1, newmode);//go to sleep
-	    write_byte(REG_PRESCALE,prescale);
-	    write_byte(REG_MODE1, oldmode);
-	    usleep(5000);
-	    write_byte(REG_MODE1, oldmode | 0x80);
-	    success=true;
-	    if(debug) std::cout<<"done.\n";
-	}catch(std::exception& e){
-		std::cout<<e.what()<<std::endl;
-	}
-	return success;
-		 */
 		ensureInitialization();
 	    int prescale = 25000000;//25MHz
 	    prescale /= 4096;//12-bit
@@ -121,20 +80,6 @@ public class PCA9685Driver {
 	}
 	
 	public void setChannelPWMSteps(int channel,int on,int off) throws IOException {
-		/*
-		 * 	bool success=false;
-	try{
-		if(debug) std::cout<<"Setting pwm of channel "<<channel<<". ON: "<<on<<" OFF: "<<off<<std::endl;
-		write_byte(REG_LED0_ON_L+4*channel, on&0xFF);
-		write_byte(REG_LED0_ON_H+4*channel, (on >> 8)&0xFF );
-		write_byte(REG_LED0_OFF_L+4*channel, off&0xFF);
-		write_byte(REG_LED0_OFF_H+4*channel, (off >> 8)&0xFF );
-		success=true;
-	}catch(std::exception& e){
-		std::cout<<e.what()<<std::endl;
-	}
-	return success;
-		 */
 		ensureInitialization();
 		if(debug)
 			System.out.println("Channel "+Integer.toString(channel)+", setting pwm steps to: ON="+Integer.toString(on)+" OFF="+Integer.toString(off));
@@ -145,20 +90,6 @@ public class PCA9685Driver {
 	}
 	
 	public void setAllPWMSteps(int on,int off) throws IOException {
-		/*
-		 * 	bool success=false;
-	try{
-		if(debug) std::cout<<"Setting pwm of all channels. ON: "<<on<<" OFF: "<<off<<std::endl;
-		write_byte(REG_ALL_LED_ON_L, on & 0xFF);
-		write_byte(REG_ALL_LED_ON_H, on >> 8);
-		write_byte(REG_ALL_LED_OFF_L, off & 0xFF);
-		write_byte(REG_ALL_LED_OFF_H, off >> 8);
-		success=true;
-	}catch(std::exception& e){
-		std::cout<<e.what()<<std::endl;
-	}
-	return success;
-		 */
 		ensureInitialization();
 		if(debug)
 			System.out.println("Setting pwm steps of all channels to: ON="+Integer.toString(on)+" OFF="+Integer.toString(off));
@@ -181,7 +112,7 @@ public class PCA9685Driver {
 		int reg=0;
 		for(reg = 0; reg<0x46; reg++) {
 			int register_content = driver.readByte((byte)(reg&0xFF));
-			System.out.println("Address: "+Integer.toHexString(reg)+"; contents="+Integer.toHexString(register_content));
+			System.out.println("Address: "+Integer.toHexString(reg)+"; contents="+Integer.toHexString(register_content&0xFF));
 		}
 	}
 	
@@ -206,11 +137,11 @@ public class PCA9685Driver {
 	}
 	
 	public boolean isInitialized(){
-		return initializationCalled;
+		return initialized;
 	}
 	
 	public void ensureInitialization() throws IOException {
-		if(!initializationCalled)
+		if(!initialized)
 			init();
 	}
 }

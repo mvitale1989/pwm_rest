@@ -10,8 +10,6 @@ public class I2CDriver implements Closeable {
 	private boolean debug=false;
 	private boolean initialized=false;
 
-	//public class DeviceNotOpenException extends Exception{ private static final long serialVersionUID = 7827078331011336573L; }
-	//public class I2CDriverException extends Exception{ private static final long serialVersionUID = -2926408543711449468L; }
 	private native int nativeOpenDeviceFile(String i2cDevicePath,int deviceAddress);
 	private native void nativeCloseDeviceFile();
 	private native void nativeWriteByte(byte address,byte value);
@@ -73,5 +71,5 @@ public class I2CDriver implements Closeable {
 		if(nativeExitCode!=0)
 			throw new IOException();
 		return readValue;
-	}
+	}	
 }
