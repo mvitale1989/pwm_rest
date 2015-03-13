@@ -25,7 +25,7 @@ public class PCA9685Driver {
 	static final int BIT_OUTDRV = 0x04;
 
 	I2CDriver driver=null;
-	boolean initialized=false;
+	boolean initializationCalled=false;
 	boolean debug=false;
 	
 	public PCA9685Driver(I2CDriver driverArg,boolean debugArg){
@@ -55,6 +55,7 @@ public class PCA9685Driver {
     		return success;
 			}
 		 	*/
+		initializationCalled=true;
 		if(debug)
 			System.out.print("Initializing device...");
 		setAllPWMSteps(0, 0);
@@ -71,7 +72,6 @@ public class PCA9685Driver {
 		}catch(InterruptedException e){}
 		if(debug)
 			System.out.println("success.");
-		initialized=true;
 	}
 	
 	public void setPWMFrequency(int hertz) throws IOException {
@@ -206,11 +206,11 @@ public class PCA9685Driver {
 	}
 	
 	public boolean isInitialized(){
-		return initialized;
+		return initializationCalled;
 	}
 	
 	public void ensureInitialization() throws IOException {
-		if(!initialized)
+		if(!initializationCalled)
 			init();
 	}
 }
