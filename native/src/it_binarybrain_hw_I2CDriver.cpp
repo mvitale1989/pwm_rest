@@ -90,7 +90,7 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_I2CDriver_nativeWriteByte
 	jint i2c_file_descriptor=env->GetIntField(obj,i2c_file_descriptor_fid);
 	unsigned char i2c_address = i2c_address_arg;
 	unsigned char value = value_arg;
-	if(debug) std::cout<<"[native] writing byte "<<value<<" to address "<<i2c_address<<"...";
+	if(debug) std::cout<<"[native] writing byte "<<std::hex<<(int)value<<" to address "<<(int)i2c_address<<"..."<<std::dec;
 	if(i2c_file_descriptor<0){
 		if(debug) std::cout<<"error. (I2C file descriptor not open. Did you call init?)\n"<<std::endl;
 		env->SetIntField(obj,exit_code_fid,-1);

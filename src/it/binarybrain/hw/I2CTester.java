@@ -17,6 +17,7 @@ public class I2CTester {
 			pwmDriver=new PCA9685Driver(i2c,debug);
 			System.out.println("Initializing device...");
 			pwmDriver.init();
+			pwmDriver.setPWMFrequency(50);
 			System.out.println("Starting PCA9685Driver testing routine...");
 			pwmDriver.test();
 			System.out.println("Dumping device memory...");
