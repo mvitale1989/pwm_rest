@@ -1,7 +1,6 @@
 package it.binarybrain.hw;
 
 import java.io.Closeable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class I2CDriver implements Closeable {
@@ -9,6 +8,7 @@ public class I2CDriver implements Closeable {
 	private int i2cFileDescriptor=-1;
 	private int nativeExitCode=0;
 	private boolean debug=false;
+	private boolean initialized=false;
 
 	//public class DeviceNotOpenException extends Exception{ private static final long serialVersionUID = 7827078331011336573L; }
 	//public class I2CDriverException extends Exception{ private static final long serialVersionUID = -2926408543711449468L; }
@@ -35,21 +35,29 @@ public class I2CDriver implements Closeable {
 	/*
 	 * DRIVER METHODS
 	 */
-	public void init(String i2cDevicePath,int deviceAddress) throws IOException {
-		i2cFileDescriptor=nativeOpenDeviceFile(i2cDevicePath,deviceAddress);
-		if(nativeExitCode!=0){
-			i2cFileDescriptor=-1;
-			throw new IOException();
+	synchronized public void init(String i2cDevicePath,int deviceAddress) throws IOException {
+		if(initialized == false){
+			i2cFileDescriptor=nativeOpenDeviceFile(i2cDevicePath,deviceAddress);
+			if(nativeExitCode!=0){
+				i2cFileDescriptor=-1;
+				throw new IOException();
+			}
+			initialized=true;
 		}
 	}
 	
 	@Override
-	public void close() throws IOException {
-		if(i2cFileDescriptor>=0)
+	synchronized public void close() throws IOException {
+		if(i2cFileDescriptor>=0){
 			nativeCloseDeviceFile();
+			if(nativeExitCode!=0){
+				throw new IOException("error during driver close.");
+			}
+			initialized=false;
+		}
 	}
 	
-	public void writeByte(byte address,byte value)throws IOException {
+	synchronized public void writeByte(byte address,byte value)throws IOException {
 		if(i2cFileDescriptor<0)
 			throw new IllegalStateException("attempted write on a not yet initialized i2c device.");
 		nativeWriteByte(address,value);
@@ -57,7 +65,7 @@ public class I2CDriver implements Closeable {
 			throw new IOException();
 	}
 	
-	public byte readByte(byte address) throws IOException {
+	synchronized public byte readByte(byte address) throws IOException {
 		byte readValue;
 		if(i2cFileDescriptor<0)
 			throw new IllegalStateException("attempted read on a not yet initialized i2c device.");
