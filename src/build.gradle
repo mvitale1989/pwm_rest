@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+mainClassName = 'it.binarybrain.tmp.PCA9685Tester'
+
+//Log4J dependency resolution
+repositories {
+	flatDir {
+		dirs 'libs'
+	}
+}
+dependencies {
+	compile 'org.apache.logging.log4j:log4j-core:2.2'
+} 
+
+//native build task
+task buildLibrary (type:Exec) {
+	commandLine 'make'
+	workingDir 'src/main/c++'
+	doFirst{ println 'Compiling library...' }
+	doLast{ println 'Native library compilation completed.' }
+}
+buildLibrary.dependsOn classes
+build.dependsOn 'buildLibrary'
