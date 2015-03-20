@@ -21,7 +21,8 @@ task buildLibrary (type:Exec) {
 	doLast{ println 'Native library compilation completed.' }
 }
 buildLibrary.dependsOn classes
-build.dependsOn 'buildLibrary'
+build.dependsOn buildLibrary
+run.dependsOn buildLibrary
 
 //java.library.path specification, for finding library
 run {
