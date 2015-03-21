@@ -3,12 +3,16 @@ PROJECT_HOME=../../..
 TARGET_DIR=$(PROJECT_HOME)/build/libs
 ARTIFACT=$(TARGET_DIR)/libbbi2c.so
 
-all: library
+all: header library
 
 library: $(ARTIFACT)
-$(ARTIFACT): it_binarybrain_hw_I2CDriver.h it_binarybrain_hw_I2CDriver.cpp
+$(ARTIFACT): it_binarybrain_hw_i2c_I2CDriver.cpp
 	mkdir -p $(TARGET_DIR)
-	g++ -fPIC -shared -I$(JHOME)/include -I$(JHOME)/include/linux it_binarybrain_hw_I2CDriver.cpp -o $(ARTIFACT)
+	g++ -fPIC -shared -I$(JHOME)/include -I$(JHOME)/include/linux it_binarybrain_hw_i2c_I2CDriver.cpp -o $(ARTIFACT)
+
+header: it_binarybrain_hw_i2c_I2CDriver.h
+	javah -classpath ../../../build/classes/main -d . it.binarybrain.hw.i2c.I2CDriver
+
 
 clean:
 	#rm -f $(ARTIFACT)
