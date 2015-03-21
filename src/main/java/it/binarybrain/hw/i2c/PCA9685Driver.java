@@ -50,20 +50,20 @@ public class PCA9685Driver {
 			if(debug)
 				System.out.print("Initializing device...");
 			setAllPWMSteps(0, 0);
-			communicator.writeByte( (byte)deviceAddress, (byte)(REG_MODE2), (byte)(BIT_OUTDRV) );
-			communicator.writeByte( (byte)deviceAddress, (byte)(REG_MODE1), (byte)(BIT_ALLCALL) );
+			communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_MODE2), (byte)(BIT_OUTDRV) );
+			communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_MODE1), (byte)(BIT_ALLCALL) );
 			try{
 				Thread.sleep(5);//wait for oscillator
 			}catch(InterruptedException e){}
-			int mode1=communicator.readByte( (byte)deviceAddress, (byte)REG_MODE1);
+			int mode1=communicator.readByte( (byte)(deviceAddress&0xFF), (byte)REG_MODE1);
 			mode1=mode1 & ~BIT_SLEEP;//wake up, reset sleep
-			communicator.writeByte( (byte)deviceAddress, (byte)REG_MODE1, (byte)mode1 );
+			communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)REG_MODE1, (byte)mode1 );
 			try{
 				Thread.sleep(5);//wait for oscillator
 			}catch(InterruptedException e){}
 			if(debug)
 				System.out.println("success.");
-		}catch(IOException e){
+		}catch(IOException | NullPointerException e){
 			initialized=false;
 			throw new IOException(e.getMessage());
 		}
@@ -78,15 +78,15 @@ public class PCA9685Driver {
 	    if(debug){
 	    	System.out.print("Setting PWM frequency to "+Integer.toString(hertz)+"; estimated pre-scale: "+Integer.toString(prescale)+". Initializing...");
 	    }
-	    int oldmode = communicator.readByte( (byte)deviceAddress, (byte)REG_MODE1 );
+	    int oldmode = communicator.readByte( (byte)(deviceAddress&0xFF), (byte)REG_MODE1 );
 	    int newmode = (oldmode & 0x7F) | 0x10;//sleep
-	    communicator.writeByte( (byte)deviceAddress,(byte)REG_MODE1, (byte)newmode);//go to sleep
-	    communicator.writeByte( (byte)deviceAddress,(byte)REG_PRESCALE,(byte)(prescale&0xFF) );
-	    communicator.writeByte( (byte)deviceAddress,(byte)REG_MODE1, (byte)oldmode);
+	    communicator.writeByte( (byte)(deviceAddress&0xFF),(byte)REG_MODE1, (byte)newmode);//go to sleep
+	    communicator.writeByte( (byte)(deviceAddress&0xFF),(byte)REG_PRESCALE,(byte)(prescale&0xFF) );
+	    communicator.writeByte( (byte)(deviceAddress&0xFF),(byte)REG_MODE1, (byte)oldmode);
 	    try{
 	    	Thread.sleep(5);
 	    }catch(InterruptedException e){}
-	    communicator.writeByte((byte)deviceAddress,(byte)REG_MODE1, (byte)(oldmode | 0x80) );
+	    communicator.writeByte((byte)(deviceAddress&0xFF),(byte)REG_MODE1, (byte)(oldmode | 0x80) );
 	    System.out.print("PCA9685 device initialization complete.");
 	}
 	
@@ -94,20 +94,20 @@ public class PCA9685Driver {
 		ensureInitialization();
 		if(debug)
 			System.out.println("Channel "+Integer.toString(channel)+", setting pwm steps to: ON="+Integer.toString(on)+" OFF="+Integer.toString(off));
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_LED0_ON_L+4*channel) , (byte)(on&0xFF) );
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_LED0_ON_H+4*channel) , (byte)((on>>8)&0xFF) );
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_LED0_OFF_L+4*channel) , (byte)(off&0xFF) );
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_LED0_OFF_H+4*channel) , (byte)((off>>8)&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_LED0_ON_L+4*channel) , (byte)(on&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_LED0_ON_H+4*channel) , (byte)((on>>8)&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_LED0_OFF_L+4*channel) , (byte)(off&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_LED0_OFF_H+4*channel) , (byte)((off>>8)&0xFF) );
 	}
 	
 	public void setAllPWMSteps(int on,int off) throws IOException {
 		ensureInitialization();
 		if(debug)
 			System.out.println("Setting pwm steps of all channels to: ON="+Integer.toString(on)+" OFF="+Integer.toString(off));
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_ALL_LED_ON_L) , (byte)(on&0xFF) );
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_ALL_LED_ON_H) , (byte)((on>>8)&0xFF) );
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_ALL_LED_OFF_L) , (byte)(off&0xFF) );
-		communicator.writeByte( (byte)deviceAddress, (byte)(REG_ALL_LED_OFF_H) , (byte)((off>>8)&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_ALL_LED_ON_L) , (byte)(on&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_ALL_LED_ON_H) , (byte)((on>>8)&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_ALL_LED_OFF_L) , (byte)(off&0xFF) );
+		communicator.writeByte( (byte)(deviceAddress&0xFF), (byte)(REG_ALL_LED_OFF_H) , (byte)((off>>8)&0xFF) );
 	}
 	
 	public void setChannelDutyCycle(int channel,int percent){
@@ -122,8 +122,8 @@ public class PCA9685Driver {
 		ensureInitialization();
 		int reg=0;
 		for(reg = 0; reg<0x46; reg++) {
-			int register_content = communicator.readByte( (byte)deviceAddress, (byte)(reg&0xFF) );
-			System.out.println("Address: "+Integer.toHexString(reg)+"; contents="+Integer.toHexString(register_content&0xFF));
+			int register_content = communicator.readByte( (byte)(deviceAddress&0xFF), (byte)(reg&0xFF) );
+			System.out.println("Address: "+Integer.toHexString(reg&0xFF)+"; contents="+Integer.toHexString(register_content&0xFF));
 		}
 	}
 	

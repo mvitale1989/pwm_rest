@@ -132,8 +132,8 @@ public class I2CDriver extends Thread {
 		case I2CREQUEST_READ:
 			if(debug) System.out.println("[driver] read request received.");
 			try{
-				readByte( (byte)(request.getSlaveAddress()&0xFF) , (byte)(request.getData()&0xFF) );
-				response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_ACK,0);
+				int value=readByte( (byte)(request.getSlaveAddress()&0xFF) , (byte)(request.getData()&0xFF) );
+				response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_READ_VALUE,value&0xFF);
 			}catch(IOException e){
 				reopen.set(true);
 				response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_ERROR,0);

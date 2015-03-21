@@ -10,7 +10,7 @@ public class I2CResponse {
 	}
 	
 	public I2CResponse(I2CResponseType responseTypeArg,int readValueArg){
-		if(responseType==null)
+		if(responseTypeArg==null)
 			throw new IllegalArgumentException("passed null as responseType argument.");
 		responseType=responseTypeArg;
 		readValue=readValueArg;

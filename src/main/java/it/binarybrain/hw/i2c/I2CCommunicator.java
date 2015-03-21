@@ -12,7 +12,7 @@ public class I2CCommunicator {
 	private long waitForResponseTimeoutMs=1000;
 	BlockingQueue<I2CResponse> responses=new LinkedBlockingQueue<I2CResponse>();
 	boolean debug=false;
-	
+
 	public I2CCommunicator(I2CDriver driverArg){
 		if(driverArg==null)
 			throw new IllegalArgumentException("passed null as I2CCommunicator driver argument.");
@@ -20,8 +20,8 @@ public class I2CCommunicator {
 		debug=driver.getDebug();
 		if(debug) System.out.println("[communicator] communicator instantiated.");
 	}
-	
-	public Integer readByte(int i2cSlaveAddress,int i2cMemoryAddress){
+
+	public Integer readByte(byte i2cSlaveAddress,byte i2cMemoryAddress){
 		if(debug) System.out.println("[communicator] called readByte function of the communicator. Creating request...");
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_READ,i2cSlaveAddress,i2cMemoryAddress,0);
 		I2CResponse response=null;
@@ -37,7 +37,7 @@ public class I2CCommunicator {
 			return null;
 	}
 	
-	public boolean writeByte(int i2cSlaveAddress,int i2cMemoryAddress,int value){
+	public boolean writeByte(byte i2cSlaveAddress,byte i2cMemoryAddress,byte value){
 		if(debug) System.out.println("[communicator] called writeByte function of the communicator. Creating request...");
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_WRITE,i2cSlaveAddress,i2cMemoryAddress,value);
 		I2CResponse response=null;

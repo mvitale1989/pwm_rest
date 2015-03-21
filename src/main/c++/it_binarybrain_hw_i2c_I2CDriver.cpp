@@ -80,21 +80,21 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeWriteByte
 	//Codice funzionale
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
 	jint i2c_file_descriptor=env->GetIntField(obj,i2c_file_descriptor_fid);
-	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address  "<<i2c_device_address<<"....";
+	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address  "<<std::hex<<(int)(i2c_device_address&0xFF)<<"....";
 	if (ioctl(i2c_file_descriptor,I2C_SLAVE,i2c_device_address) < 0) {
 		if(debug) std::cout<<"Failed to acquire bus access and/or talk to slave. ("<<strerror(errno)<<")\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return;
 	}
-	if(debug) std::cout<<"success.\n[native] writing byte "<<std::hex<<(int)value<<" to address "<<(int)i2c_memory_address<<"..."<<std::dec;
+	if(debug) std::cout<<"success.\n[native] writing byte "<<std::hex<<(int)(value&0xFF)<<" to address "<<std::hex<<(int)(i2c_memory_address&0xFF)<<"..."<<std::dec;
 	if(i2c_file_descriptor<0){
 		if(debug) std::cout<<"error. (I2C file descriptor not open. Did you call init?)\n"<<std::endl;
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return;
 	}
-	if( i2c_smbus_write_byte_data(i2c_file_descriptor,i2c_memory_address,value) != -1 ){
+	if( i2c_smbus_write_byte_data(i2c_file_descriptor,(unsigned char)(i2c_memory_address&0xFF),(unsigned char)(value&0xFF)) != -1 ){
 		if(debug) std::cout<<"success.\n";
 		env->SetIntField(obj,exit_code_fid,0);
 
@@ -118,21 +118,21 @@ JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeReadByte
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
 	jint read_value=0;
 	jint i2c_file_descriptor=env->GetIntField(obj,i2c_file_descriptor_fid);
-	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address  "<<i2c_device_address<<"....";
+	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address  "<<std::hex<<(int)(i2c_device_address&0xFF)<<"....";
 	if (ioctl(i2c_file_descriptor,I2C_SLAVE,i2c_device_address) < 0) {
 		if(debug) std::cout<<"Failed to acquire bus access and/or talk to slave. ("<<strerror(errno)<<")\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return -1;
 	}
-	std::cout<<"success.\n[native] trying read from "<<std::hex<<(int)i2c_memory_address<<" from file descriptor...";
+	std::cout<<"success.\n[native] trying read from "<<std::hex<<(int)(i2c_memory_address&0xFF)<<" from file descriptor...";
 	if(i2c_file_descriptor<0){
 		std::cout<<"error (I2C file descriptor not open. Did you call init?)"<<std::endl;
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return -1;
 	}
-	read_value = i2c_smbus_read_byte_data(i2c_file_descriptor,i2c_memory_address);
+	read_value = i2c_smbus_read_byte_data(i2c_file_descriptor,(unsigned char)(i2c_memory_address&0xFF));
 	if(read_value!=-1){
 		std::cout<<"success.\n";
 		env->SetIntField(obj,exit_code_fid,0);

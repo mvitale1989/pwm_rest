@@ -14,9 +14,9 @@ public class I2CRequest {
 	}
 	
 	public I2CRequest(I2CCommunicator senderArg,I2CRequestType requestTypeArg,int i2cSlaveAddressArg,int i2cMemoryAddressArg,int dataArg){
-		if(sender==null)
+		if(senderArg==null)
 			throw new IllegalArgumentException("passed null as sender in I2CRequest. It should be the proprietary I2CCommunicator's reference.");
-		if(requestType==null)
+		if(requestTypeArg==null)
 			throw new IllegalArgumentException("passed null as requestType in I2CRequest.");
 		sender=senderArg;
 		i2cSlaveAddress=i2cSlaveAddressArg;
