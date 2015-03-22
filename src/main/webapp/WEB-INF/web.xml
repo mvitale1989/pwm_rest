@@ -5,20 +5,20 @@
         <servlet-name>Jersey</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>it.binarybrain.rest</param-value>
         </init-param>
 
         <!-- the following is only needed if you want to use the built-in support
         for mapping pojo objects to json. -->
-        <init-param>
-            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-            <param-value>true</param-value>
-    </init-param>
+<!--         <init-param> -->
+<!--             <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name> -->
+<!--             <param-value>true</param-value> -->
+<!--     	</init-param> -->
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey</servlet-name>
-        <url-pattern>*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
