@@ -1,5 +1,6 @@
 package it.binarybrain.tmp;
 
+import it.binarybrain.hw.i2c.I2CCommunicator;
 import it.binarybrain.hw.i2c.I2CDriver;
 import it.binarybrain.hw.i2c.PCA9685Driver;
 
@@ -18,6 +19,7 @@ public class PCA9685Tester {
 		String i2cDevicePath="/dev/i2c-1";
 		byte i2cDeviceAddress=(byte)0x40;
 		I2CDriver i2cDriver=null;
+		I2CCommunicator i2cCommunicator=null;
 		PCA9685Driver pwmDriver=null;
 		try{
 			logger.info("STARTING I2C AND PCA9685 TESTS.....");
@@ -29,6 +31,10 @@ public class PCA9685Tester {
 			pwmDriver=new PCA9685Driver(i2cDriver,i2cDeviceAddress);
 			logger.info("setting PCA9685 frequency to 50Hz...");
 			pwmDriver.setPWMFrequency(50);
+			logger.info("instantiating extra communicator for further testing...");
+			i2cCommunicator = new I2CCommunicator(i2cDriver);
+			logger.info("testing driver reopen command...");
+			i2cCommunicator.requestReopen();
 			logger.info("starting PCA9685Driver testing routine...");
 			pwmDriver.test();
 			logger.info("dumping device memory...");

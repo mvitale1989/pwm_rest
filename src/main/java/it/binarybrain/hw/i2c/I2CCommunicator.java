@@ -1,6 +1,7 @@
 package it.binarybrain.hw.i2c;
 
 import it.binarybrain.hw.i2c.I2CRequest.I2CRequestType;
+import it.binarybrain.hw.i2c.I2CResponse.I2CResponseType;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
@@ -46,7 +47,7 @@ public class I2CCommunicator {
 	
 	public void writeByte(int i2cSlaveAddress,int i2cMemoryAddress,int value) throws IOException {
 		logger.trace("called writeByte function of the communicator. Creating request for driver. (slave address: "+
-				Integer.toHexString(i2cSlaveAddress)+", memory address: "+Integer.toHexString(i2cMemoryAddress)+", value= "+
+				Integer.toHexString(i2cSlaveAddress)+", memory address: "+Integer.toHexString(i2cMemoryAddress)+", value: "+
 				Integer.toHexString(value)+")");
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_WRITE,i2cSlaveAddress,i2cMemoryAddress,value);
 		I2CResponse response=null;
@@ -56,8 +57,44 @@ public class I2CCommunicator {
 		try{
 			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);
 		}catch(InterruptedException e){}
-		if(response!=null){
-			logger.trace("WRITE response received from driver.");
+		if(response!=null&&response.getType()==I2CResponseType.I2CRESPONSE_ACK){
+			logger.trace("ACK response received from driver to write request.");
+		}else{
+			logger.error("driver did not respond, or response is of the wrong type.");
+			throw new IOException("driver did not respond, or response is of the wrong type.");
+		}
+	}
+	
+	public void requestReopen() throws IOException {
+		logger.trace("called Reopen function of the communicator. Creating request for driver.");
+		I2CRequest request = new I2CRequest(this,I2CRequestType.I2CREQUEST_REOPEN_DRIVER,0,0,0);
+		I2CResponse response = null;
+		logger.trace("request created. Queueing request to the driver.");
+		driver.queueRequest(request);
+		logger.info("writeByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
+		try{
+			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);
+		}catch(InterruptedException e){}
+		if(response!=null&&response.getType()==I2CResponseType.I2CRESPONSE_ACK){
+			logger.trace("ACK response received from driver to Reopen request.");
+		}else{
+			logger.error("driver did not respond, or response is of the wrong type.");
+			throw new IOException("driver did not respond, or response is of the wrong type.");
+		}
+	}
+	
+	public void requestClose() throws IOException {
+		logger.trace("called Close function of the communicator. Creating request for driver.");
+		I2CRequest request = new I2CRequest(this,I2CRequestType.I2CREQUEST_CLOSE_DRIVER,0,0,0);
+		I2CResponse response = null;
+		logger.trace("request created. Queueing request to the driver.");
+		driver.queueRequest(request);
+		logger.info("writeByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
+		try{
+			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);
+		}catch(InterruptedException e){}
+		if(response!=null&&response.getType()==I2CResponseType.I2CRESPONSE_ACK){
+			logger.trace("ACK response received from driver to Close request.");
 		}else{
 			logger.error("driver did not respond, or response is of the wrong type.");
 			throw new IOException("driver did not respond, or response is of the wrong type.");

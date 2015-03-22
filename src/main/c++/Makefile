@@ -11,6 +11,7 @@ $(ARTIFACT): it_binarybrain_hw_i2c_I2CDriver.cpp
 	g++ -fPIC -shared -I$(JHOME)/include -I$(JHOME)/include/linux it_binarybrain_hw_i2c_I2CDriver.cpp -o $(ARTIFACT)
 
 header: it_binarybrain_hw_i2c_I2CDriver.h
+it_binarybrain_hw_i2c_I2CDriver.h: ../../../build/classes/main/it/binarybrain/hw/i2c/I2CDriver.class
 	javah -classpath ../../../build/classes/main -d . it.binarybrain.hw.i2c.I2CDriver
 
 

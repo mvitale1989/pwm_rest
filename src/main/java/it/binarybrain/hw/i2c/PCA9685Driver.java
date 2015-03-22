@@ -82,7 +82,7 @@ public class PCA9685Driver {
 	    	Thread.sleep(5);
 	    }catch(InterruptedException e){}
 	    communicator.writeByte( deviceAddress , REG_MODE1, (oldmode | 0x80) );
-	    System.out.print("PCA9685 device initialization complete.");
+	    logger.info("PCA9685 device initialization complete.");
 	}
 	
 	public void setChannelPWMSteps(int channel,int on,int off) throws IOException {
@@ -125,20 +125,20 @@ public class PCA9685Driver {
 	public void test() throws IOException {
 		ensureInitialization();
 		try{
-			System.out.println("Commencing PCA9685 test operations.");
-			System.out.println("Setting all channels pwm steps to 0-150...");
+			logger.info("Commencing PCA9685 test operations.");
+			logger.info("Setting all channels pwm steps to 0-150...");
 			setAllPWMSteps(0,150);
 			Thread.sleep(2000);
-			System.out.println("Setting all channels pwm steps to 0-600...");
+			logger.info("Setting all channels pwm steps to 0-600...");
 			setAllPWMSteps(0,600);
 			Thread.sleep(2000);
 			for(int i=0;i<16;i++){
-				System.out.println("Setting channel "+Integer.toString(i)+" pwm steps to 0-150...");
+				logger.info("Setting channel "+Integer.toString(i)+" pwm steps to 0-150...");
 				this.setChannelPWMSteps(i, 0, 150);
 				Thread.sleep(500);
 			}
 		}catch(InterruptedException e){}
-		System.out.println("PC9685 test operations ended. Turning all pwm off.");
+		logger.info("PC9685 test operations ended. Turning all pwm off.");
 		this.setAllPWMSteps(0, 0);
 	}
 	

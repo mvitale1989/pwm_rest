@@ -29,7 +29,7 @@ JNIEXPORT jint JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeOpenDeviceFile
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
 	const char* i2c_device_path_cstr = env->GetStringUTFChars(i2c_device_path, JNI_FALSE);
 	int i2c_file_descriptor=-1;
-	if(debug) std::cout<<"[native] Opening file descriptor: "<<i2c_device_path_cstr<<"....";
+	if(debug) std::cout<<"[native] Opening virtual file: "<<i2c_device_path_cstr<<"....";
 	i2c_file_descriptor = open(i2c_device_path_cstr,O_RDWR);
 	if ( i2c_file_descriptor < 0) {
 		if(debug) std::cout<<"failed to open the bus. ("<<strerror(errno)<<")\n";
@@ -60,10 +60,10 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeCloseDeviceFil
 	if(debug) std::cout<<"[native] attempting to close the given file descriptor...";
 	if(close(i2c_file_descriptor)==0){
 		env->SetIntField(obj,exit_code_fid,0);
-		if(debug) std::cout<<"success."<<std::endl;
+		if(debug) std::cout<<"success.\n";
 	}else{
 		env->SetIntField(obj,exit_code_fid,-1);
-		if(debug) std::cout<<"failed. ("<<strerror(errno)<<")"<<std::endl;
+		if(debug) std::cout<<"failed. ("<<strerror(errno)<<")\n";
 	}
 	std::cout.flush();
 }
@@ -80,16 +80,16 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeWriteByte
 	//Codice funzionale
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
 	jint i2c_file_descriptor=env->GetIntField(obj,i2c_file_descriptor_fid);
-	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address  "<<std::hex<<(int)(i2c_device_address&0xFF)<<"....";
+	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address 0x"<<std::hex<<(int)(i2c_device_address&0xFF)<<"....";
 	if (ioctl(i2c_file_descriptor,I2C_SLAVE,i2c_device_address) < 0) {
-		if(debug) std::cout<<"Failed to acquire bus access and/or talk to slave. ("<<strerror(errno)<<")\n";
+		if(debug) std::cout<<"failed to acquire bus access and/or talk to slave. ("<<strerror(errno)<<")\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return;
 	}
-	if(debug) std::cout<<"success.\n[native] writing byte "<<std::hex<<(int)(value&0xFF)<<" to address "<<std::hex<<(int)(i2c_memory_address&0xFF)<<"..."<<std::dec;
+	if(debug) std::cout<<"success.\n[native] writing value 0x"<<std::hex<<(int)(value&0xFF)<<" to address 0x"<<std::hex<<(int)(i2c_memory_address&0xFF)<<"..."<<std::dec;
 	if(i2c_file_descriptor<0){
-		if(debug) std::cout<<"error. (I2C file descriptor not open. Did you call init?)\n"<<std::endl;
+		if(debug) std::cout<<"error. (I2C file descriptor not open. Did you call init?)\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return;
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeWriteByte
 		env->SetIntField(obj,exit_code_fid,0);
 
 	}else{
-		if(debug) std::cout<<"error. ("<<strerror(errno)<<")"<<std::endl;
+		if(debug) std::cout<<"error. ("<<strerror(errno)<<")\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 	}
 	std::cout.flush();
@@ -118,16 +118,16 @@ JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeReadByte
 	jboolean debug=env->GetBooleanField(obj,debug_fid);
 	jint read_value=0;
 	jint i2c_file_descriptor=env->GetIntField(obj,i2c_file_descriptor_fid);
-	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address  "<<std::hex<<(int)(i2c_device_address&0xFF)<<"....";
+	if(debug) std::cout<<"[native] Setting up file descriptor for communication with device at address 0x"<<std::hex<<(int)(i2c_device_address&0xFF)<<"....";
 	if (ioctl(i2c_file_descriptor,I2C_SLAVE,i2c_device_address) < 0) {
-		if(debug) std::cout<<"Failed to acquire bus access and/or talk to slave. ("<<strerror(errno)<<")\n";
+		if(debug) std::cout<<"failed to acquire bus access and/or talk to slave. ("<<strerror(errno)<<")\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return -1;
 	}
-	std::cout<<"success.\n[native] trying read from "<<std::hex<<(int)(i2c_memory_address&0xFF)<<" from file descriptor...";
+	std::cout<<"success.\n[native] trying read from memory address 0x"<<std::hex<<(int)(i2c_memory_address&0xFF)<<" from device at address 0x"<<std::hex<<(int)(i2c_device_address&0xFF)<<"...";
 	if(i2c_file_descriptor<0){
-		std::cout<<"error (I2C file descriptor not open. Did you call init?)"<<std::endl;
+		std::cout<<"error (I2C file descriptor not open. Did you call init?)\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return -1;
@@ -137,7 +137,7 @@ JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeReadByte
 		std::cout<<"success.\n";
 		env->SetIntField(obj,exit_code_fid,0);
 	}else{
-		std::cout<<"error. ("<<strerror(errno)<<")"<<std::endl;
+		std::cout<<"error. ("<<strerror(errno)<<")\n";
 		env->SetIntField(obj,exit_code_fid,-1);
 		std::cout.flush();
 		return -1;

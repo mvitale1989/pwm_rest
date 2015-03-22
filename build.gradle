@@ -16,6 +16,7 @@ dependencies {
 //native build task
 task buildLibrary (type:Exec) {
 	commandLine 'make'
+	args 'library'
 	workingDir 'src/main/c++'
 	doFirst{ println 'Compiling library...' }
 	doLast{ println 'Native library compilation completed.' }

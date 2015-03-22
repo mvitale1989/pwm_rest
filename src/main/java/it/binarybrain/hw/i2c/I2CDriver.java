@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import it.binarybrain.hw.i2c.I2CResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,12 +93,12 @@ public class I2CDriver extends Thread {
 	@Override
 	public void run(){
 		Thread.currentThread().setName("driver_"+this.i2cDevicePath);
-		logger.trace("[driver] thread started.");
+		logger.trace("driver thread started.");
 		while(!exit.get()){
 			try{
 				logger.info("opening i2c virtual file.");
 				open();
-				logger.info("virtual fle opened. Serving requests.");
+				logger.info("virtual fle opened.");
 				serveRequests();
 			}catch(IOException e){}
 			logger.info("request serving over. Attempting virtual file close. (exit value: "+String.valueOf(exit.get())+")");
