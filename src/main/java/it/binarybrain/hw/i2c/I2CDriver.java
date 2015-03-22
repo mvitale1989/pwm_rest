@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 public class I2CDriver extends Thread {
 	private final long waitForRequestsTimeoutMs=5000;
+	private final long waitForReopenMs=200;
 
 	private BlockingQueue<I2CRequest> requests=new LinkedBlockingQueue<I2CRequest>();
 	private AtomicBoolean exit=new AtomicBoolean(false);
@@ -98,13 +99,16 @@ public class I2CDriver extends Thread {
 				open();
 				logger.info("virtual fle opened. Serving requests.");
 				serveRequests();
-			}catch(IOException e){ e.printStackTrace(); }
+			}catch(IOException e){}
 			logger.info("request serving over. Attempting virtual file close. (exit value: "+String.valueOf(exit.get())+")");
 			try{
 				close();
 			}catch(IOException e){ e.printStackTrace(); }
 			logger.info("virtual file closed.");
 			reopen.set(false);
+			if(!exit.get()){
+				try{ Thread.sleep(waitForReopenMs); }catch(InterruptedException e){}
+			}
 		}
 	}
 

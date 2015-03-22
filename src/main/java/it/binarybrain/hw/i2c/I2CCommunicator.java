@@ -2,6 +2,7 @@ package it.binarybrain.hw.i2c;
 
 import it.binarybrain.hw.i2c.I2CRequest.I2CRequestType;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -23,9 +24,9 @@ public class I2CCommunicator {
 		logger.trace("communicator instantiated.");
 	}
 
-	public Integer readByte(int i2cSlaveAddress,int i2cMemoryAddress){
+	public int readByte(int i2cSlaveAddress,int i2cMemoryAddress) throws IOException{
 		logger.trace("called readByte function of the communicator. Creating request for driver. (slave address: "+
-				Integer.valueOf(i2cSlaveAddress)+", memory address: "+Integer.valueOf(i2cMemoryAddress)+")");
+				Integer.toHexString(i2cSlaveAddress)+", memory address: "+Integer.toHexString(i2cMemoryAddress)+")");
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_READ,i2cSlaveAddress,i2cMemoryAddress,0);
 		I2CResponse response=null;
 		logger.trace("request created. Queueing request to the driver.");
@@ -38,18 +39,17 @@ public class I2CCommunicator {
 			logger.trace("READ response received from driver.");
 			return response.getReadValue();
 		}else{
-			logger.warn("driver did not respond, or response is of the wrong type.");
-			return null;
+			logger.error("driver did not respond, or response is of the wrong type.");
+			throw new IOException("driver did not respond, or response is of the wrong type.");
 		}
 	}
 	
-	public boolean writeByte(int i2cSlaveAddress,int i2cMemoryAddress,int value){
+	public void writeByte(int i2cSlaveAddress,int i2cMemoryAddress,int value) throws IOException {
 		logger.trace("called writeByte function of the communicator. Creating request for driver. (slave address: "+
-				Integer.valueOf(i2cSlaveAddress)+", memory address: "+Integer.valueOf(i2cMemoryAddress)+", value= "+
-				Integer.valueOf(value)+")");
+				Integer.toHexString(i2cSlaveAddress)+", memory address: "+Integer.toHexString(i2cMemoryAddress)+", value= "+
+				Integer.toHexString(value)+")");
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_WRITE,i2cSlaveAddress,i2cMemoryAddress,value);
 		I2CResponse response=null;
-		boolean success=false;
 		logger.trace("request created. Queueing request to the driver.");
 		driver.queueRequest(request);
 		logger.info("writeByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
@@ -58,10 +58,10 @@ public class I2CCommunicator {
 		}catch(InterruptedException e){}
 		if(response!=null){
 			logger.trace("WRITE response received from driver.");
-			success=true;
-		}else
-			logger.warn("driver did not respond, or response is of the wrong type.");
-		return success;
+		}else{
+			logger.error("driver did not respond, or response is of the wrong type.");
+			throw new IOException("driver did not respond, or response is of the wrong type.");
+		}
 	}
 	
 	public void postReply(I2CResponse response){
