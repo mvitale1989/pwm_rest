@@ -10,7 +10,7 @@ public class I2CRequest {
 	//Level logLevel=null;
 	
 	public enum I2CRequestType {
-		I2CREQUEST_WRITE, I2CREQUEST_READ, I2CREQUEST_CLOSE_DRIVER, I2CREQUEST_REOPEN_DRIVER, I2CREQUEST_CHANGE_LOGLEVEL;
+		I2CREQUEST_WRITE, I2CREQUEST_READ, I2CREQUEST_CLOSE_DRIVER, I2CREQUEST_REOPEN_DRIVER;
 	}
 	
 	public I2CRequest(I2CCommunicator senderArg,I2CRequestType requestTypeArg,int i2cSlaveAddressArg,int i2cMemoryAddressArg,int dataArg){

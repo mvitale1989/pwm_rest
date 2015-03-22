@@ -9,6 +9,8 @@ repositories {
 }
 dependencies {
 	compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.17'
+	compile 'org.apache.logging.log4j:log4j-core:2.2'
+	compile 'org.apache.logging.log4j:log4j-api:2.2'
 }
 
 //native build task
@@ -22,8 +24,9 @@ buildLibrary.dependsOn classes
 build.dependsOn buildLibrary
 run.dependsOn buildLibrary
 
-//java.library.path specification, for finding library
+//java.library.path specification, for finding native library
 run {
 	workingDir = 'build'
 	systemProperty "java.library.path", "libs"
+	systemProperty "log4j.configurationFile", "resources/main/log4j2.xml"
 }

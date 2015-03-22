@@ -6,8 +6,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class I2CDriver extends Thread {
-	private final long waitForRequestsTimeoutMs=1000;
+	private final long waitForRequestsTimeoutMs=5000;
 
 	private BlockingQueue<I2CRequest> requests=new LinkedBlockingQueue<I2CRequest>();
 	private AtomicBoolean exit=new AtomicBoolean(false);
@@ -17,7 +20,7 @@ public class I2CDriver extends Thread {
 	private int nativeExitCode=0;
 	private boolean deviceFileIsOpen=false;
 	private boolean debug=false;
-	//private Level logLevel=Level.INFO;
+	private Logger logger=LogManager.getLogger(I2CDriver.class);
 
 	private native int nativeOpenDeviceFile(String i2cDevicePath);
 	private native void nativeCloseDeviceFile();
@@ -88,19 +91,19 @@ public class I2CDriver extends Thread {
 	@Override
 	public void run(){
 		Thread.currentThread().setName("driver_"+this.i2cDevicePath);
-		if(debug) System.out.println("[driver] thread started.");
+		logger.trace("[driver] thread started.");
 		while(!exit.get()){
 			try{
-				if(debug) System.out.println("[driver] opening i2c virtual file.");
+				logger.info("opening i2c virtual file.");
 				open();
-				if(debug) System.out.println("[driver] fle opened. Serving requests.");
+				logger.info("virtual fle opened. Serving requests.");
 				serveRequests();
 			}catch(IOException e){ e.printStackTrace(); }
-			if(debug) System.out.println("[driver] request serving over. Attempting virtual file close. (exit value: "+String.valueOf(exit.get())+")");
+			logger.info("request serving over. Attempting virtual file close. (exit value: "+String.valueOf(exit.get())+")");
 			try{
 				close();
 			}catch(IOException e){ e.printStackTrace(); }
-			if(debug) System.out.println("[driver] virtual file closed.");
+			logger.info("virtual file closed.");
 			reopen.set(false);
 		}
 	}
@@ -111,15 +114,15 @@ public class I2CDriver extends Thread {
 		I2CResponse response=null;
 		while(!exit.get()&&!reopen.get()){
 			I2CCommunicator sender=null;
-			if(debug) System.out.println("[driver] waiting for new requests....");
+			logger.trace("waiting for new requests....");
 			try{
 				request=requests.poll(waitForRequestsTimeoutMs,TimeUnit.MILLISECONDS);
 			}catch(InterruptedException e){}
 			if(request!=null){
-				if(debug) System.out.println("[driver] request received! Serving.");
+				logger.info("request received! Serving.");
 				sender=request.getSender();
 				response=serveSingleRequest(request);
-				if(debug) System.out.println("[driver] operations executed. Sending feedback to requester..");
+				logger.trace("operations executed. Sending feedback to requester..");
 				sender.postReply(response);
 			}
 		}
@@ -128,11 +131,14 @@ public class I2CDriver extends Thread {
 	//when a request is received, this function processes it and produces a response
 	private I2CResponse serveSingleRequest(I2CRequest request){
 		I2CResponse response=null;
+		byte slaveAddress=(byte)(request.getSlaveAddress()&0xFF);
+		byte memoryAddress=(byte)(request.getMemoryAddress()&0xFF);
+		byte data=(byte)(request.getData()&0xFF);
 		switch(request.getType()){
 		case I2CREQUEST_READ:
-			if(debug) System.out.println("[driver] read request received.");
+			logger.info("read request received.");
 			try{
-				int value=readByte( (byte)(request.getSlaveAddress()&0xFF) , (byte)(request.getData()&0xFF) );
+				int value=readByte( slaveAddress , memoryAddress );
 				response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_READ_VALUE,value&0xFF);
 			}catch(IOException e){
 				reopen.set(true);
@@ -140,9 +146,9 @@ public class I2CDriver extends Thread {
 			}
 			break;
 		case I2CREQUEST_WRITE:
-			if(debug) System.out.println("[driver] write request received.");
+			logger.info("write request received.");
 			try{
-				writeByte( (byte)(request.getSlaveAddress()&0xFF) , (byte)(request.getMemoryAddress()&0xFF), (byte)(request.getData()&0xFF) );
+				writeByte( slaveAddress , memoryAddress , data );
 				response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_ACK,0);
 			}catch(IOException e){
 				reopen.set(true);
@@ -150,18 +156,14 @@ public class I2CDriver extends Thread {
 			}
 			break;
 		case I2CREQUEST_REOPEN_DRIVER:
-			if(debug) System.out.println("[driver] reopen file request received.");
+			logger.info("reopen file request received.");
 			reopen.set(true);
 			response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_ACK,0);
 			break;
 		case I2CREQUEST_CLOSE_DRIVER:
-			if(debug) System.out.println("[driver] close request received.");
+			logger.info("close request received.");
 			exit.set(true);
 			response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_ACK,0);
-			break;
-		case I2CREQUEST_CHANGE_LOGLEVEL:
-			/*logLevel=request.getLogLevel();
-			response=new I2CResponse(I2CResponse.I2CResponseType.I2CRESPONSE_ACK,0);*/
 			break;
 		}
 		return response;
@@ -170,13 +172,13 @@ public class I2CDriver extends Thread {
 	
 	//Function called by I2CCommunicator whenever it needs to send a request to the driver
 	public void queueRequest(I2CRequest request){
-		if(debug) System.out.println("[driver, queueRequest] putting new message in the queue.");
+		logger.trace("putting new message in driver's queue...");
 		requests.add(request);
 	}
 	
 	
 	public void signalExit(){
-		if(debug) System.out.println("[driver] exit signaled!!!.");
+		logger.info("sent exit signal to driver.");
 		exit.set(true);
 		interrupt();
 	}
