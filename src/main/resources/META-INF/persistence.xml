@@ -1,0 +1,25 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence" version="2.0"> 
+
+<persistence-unit name="" transaction-type="RESOURCE_LOCAL"> 
+  <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+  <class>it.binarybrain.hw.i2c.PCA9685Driver</class>
+  <class>it.binarybrain.hw.Servo</class>
+  <properties> 
+    <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/> 
+    <property name="hibernate.connection.driver_class" value="org.h2.Driver"/> 
+    <property name="hibernate.connection.url" value="jdbc:h2:./test"/> 
+    <property name="hibernate.connection.username" value=""/> 
+    <property name="hibernate.connection.password" value=""/> 
+
+    <property name="show_sql" value="true"/>
+    <property name="hibernate.hbm2ddl.auto" value="update"/> 
+    <property name="hibernate.id.new_generator_mappings" value="true"/>
+    <property name="hibernate.c3p0.min_size" value="5"/>
+    <property name="hibernate.c3p0.max_size" value="20"/>
+    <property name="hibernate.c3p0.timeout" value="1800"/>
+  </properties> 
+</persistence-unit> 
+
+</persistence>

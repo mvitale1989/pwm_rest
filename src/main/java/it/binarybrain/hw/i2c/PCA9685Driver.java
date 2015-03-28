@@ -1,13 +1,27 @@
 package it.binarybrain.hw.i2c;
 
+import it.binarybrain.hw.PWMControllable;
+import it.binarybrain.hw.PWMController;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PCA9685Driver {
+@Entity
+@Table(name="PCA9685Chips")
+public class PCA9685Driver extends PWMController {
+	
+	@Id @GeneratedValue
+	private Long id;
 	
 	static final int REG_MODE1 = 0x00;
 	static final int REG_MODE2 = 0x01;
@@ -29,10 +43,14 @@ public class PCA9685Driver {
 	static final int BIT_INVRT = 0x10;
 	static final int BIT_OUTDRV = 0x04;
 
+	@Transient
 	I2CCommunicator communicator=null;
+	@Transient
 	I2CDriver driver=null;
 	int deviceAddress=0;
+	@Transient
 	boolean initialized=false;
+	@Transient
 	Logger logger = LogManager.getLogger(PCA9685Driver.class);
 
 	public PCA9685Driver(I2CDriver driverArg,int deviceAddressArg) throws IOException {
@@ -41,6 +59,7 @@ public class PCA9685Driver {
 		driver=driverArg;
 		deviceAddress=deviceAddressArg;
 		communicator=new I2CCommunicator(driver);
+		channels=new PWMControllable[16];
 	}
 	
 	public void init() throws IOException {
@@ -149,5 +168,29 @@ public class PCA9685Driver {
 	public void ensureInitialization() throws IOException {
 		if(!initialized)
 			init();
+	}
+
+	@Override
+	public boolean setFrequency(float hertz) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void addPWMControllable(PWMControllable device, int channel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removePWMControllable(PWMControllable device) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean setDutyCycle(PWMControllable device, float dc) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
