@@ -1,8 +1,9 @@
 package it.binarybrain.hw;
 
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
-
+@MappedSuperclass
 public abstract class PWMControllable {
 	@ManyToOne
 	protected PWMController controller;
