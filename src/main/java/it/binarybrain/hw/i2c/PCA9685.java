@@ -5,6 +5,7 @@ import it.binarybrain.hw.PWMController;
 import it.binarybrain.hw.Servo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class PCA9685 extends PWMController {
 		driver=driverArg;
 		deviceAddress=deviceAddressArg;
 		communicator=new I2CCommunicator(driver);
-		channels=new PWMControllable[16];
+		channels=new ArrayList<PWMControllable>(16);
 	}
 	
 	public int getDeviceAddress(){ return deviceAddress; }
@@ -186,18 +187,18 @@ public class PCA9685 extends PWMController {
 
 	@Override
 	public void addPWMControllable(PWMControllable device, int channel) throws IOException {
-		if(channels[channel]!=null)
+		if(channels.get(channel)!=null)
 			throw new IOException("attempt to overwrite channel "+Integer.toString(channel)+" of PWM controller: channel already controlled! "+
 								  "Remove it first.");
-		channels[channel]=device;
+		channels.set(channel,device);
 		device.setController(this);
 	}
 
 	@Override
 	public void removePWMControllable(PWMControllable device) throws IOException {
 		int channel = getChannel(device);
-		channels[channel].setController(null);
-		channels[channel]=null;
+		channels.get(channel).setController(null);
+		channels.set(channel,null);
 	}
 
 	@Override
@@ -209,9 +210,9 @@ public class PCA9685 extends PWMController {
 	public String toString(){
 		StringBuilder output=new StringBuilder();
 		output.append("PCA9685 at address "+Integer.toString(getDeviceAddress())+". Channels registered: ");
-		for(int i=0;i<channels.length;i++){
-			if(channels[i]!=null)
-				output.append(Integer.toString(i)+" (id: "+Long.toString( ((Servo)channels[i]).getId() )+")");
+		for(int i=0;i<channels.size();i++){
+			if(channels.get(i)!=null)
+				output.append(Integer.toString(i)+" (id: "+Long.toString( ((Servo)channels.get(i)).getId() )+")");
 		}
 		return output.toString();
 	}

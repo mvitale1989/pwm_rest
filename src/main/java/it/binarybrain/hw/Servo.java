@@ -6,8 +6,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name="Servos")
 public class Servo extends PWMControllable {
-	//@Id @GeneratedValue
-	//private Long id;
 	
 	private Float minAngle;
 	private Float maxAngle;
