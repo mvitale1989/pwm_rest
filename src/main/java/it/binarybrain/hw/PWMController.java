@@ -2,12 +2,20 @@ package it.binarybrain.hw;
 
 import java.io.IOException;
 
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
-@MappedSuperclass
+@Entity
+@Inheritance( strategy = InheritanceType.JOINED )
 public abstract class PWMController {
-	@OneToMany(mappedBy="controller")
+	@Id @GeneratedValue
+	protected Long id;
+	
+	@OneToMany//(mappedBy="controller")
 	protected PWMControllable[] channels;
 	abstract public void addPWMControllable(PWMControllable device,int channel) throws IOException;
 	abstract public void removePWMControllable(PWMControllable device) throws IOException;

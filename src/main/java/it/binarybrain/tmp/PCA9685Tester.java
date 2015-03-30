@@ -78,15 +78,10 @@ public class PCA9685Tester {
 		logger.info("SAVING CONFIGURATION");
 		em.getTransaction().begin();
 		try{
-			/*logger.info("saving servos from pca9685 with address "+Integer.toString( pca9685.getDeviceAddress() ) +".");
-			Servo[] servos = (Servo[]) pca9685.getAllChannels();
-			for(Servo servo: servos){
-				em.merge(servo);
-			}*/
 			logger.info("saving pca with address "+Integer.toString( pca9685.getDeviceAddress() ) + "to database.");
 			em.merge(pca9685);
 			em.getTransaction().commit();
-			logger.info("pca saved.);
+			logger.info("pca saved.");
 		}catch(PersistenceException e){
 			e.printStackTrace();
 			em.getTransaction().rollback();

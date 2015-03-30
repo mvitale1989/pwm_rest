@@ -1,15 +1,13 @@
 package it.binarybrain.hw;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="Servos")
 public class Servo extends PWMControllable {
-	@Id @GeneratedValue
-	private Long id;
+	//@Id @GeneratedValue
+	//private Long id;
 	
 	private Float minAngle;
 	private Float maxAngle;
@@ -19,14 +17,6 @@ public class Servo extends PWMControllable {
 	
 	public Servo(){}
 	public Servo(PWMController controller){ this.controller = controller; }
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public PWMController getController() {
 		return controller;
