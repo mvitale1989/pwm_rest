@@ -5,9 +5,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class I2CDriver {
 	static I2CDriver instance;
 	ConcurrentMap<String,I2CBusDriver> busDrivers;
+	Logger logger = LogManager.getLogger(I2CDriver.class);
 	
 	private I2CDriver(){
 		busDrivers = new ConcurrentHashMap<String,I2CBusDriver>();

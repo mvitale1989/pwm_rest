@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Entity
 @Table(name="Servos")
@@ -15,18 +19,21 @@ public class Servo extends PWMControllable {
 	private Float maxAngleDutyCycle;
 	private Float degreePerSecond;
 	
+	@Transient
+	Logger logger = LogManager.getLogger(Servo.class);
+	
 	public Servo(){}
-	public Servo(PWMController controller){ this.controller = controller; }
-	public Servo(PWMController controller,Servo servo){
-		this.controller = controller;
+	public Servo(Servo servo){
 		this.minAngle = servo.getMinAngle();
 		this.maxAngle = servo.getMaxAngle();
 		this.minAngleDutyCycle = servo.getMinAngleDutyCycle();
 		this.maxAngleDutyCycle = servo.getMaxAngleDutyCycle();
 		this.degreePerSecond = servo.getDegreePerSecond();
 	}
-	public Servo(PWMController controller,float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle,float degreePerSecond){
-		this.controller = controller;
+	public Servo(float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle){
+		this(minAngle,maxAngle,minAngleDutyCycle,maxAngleDutyCycle,0);
+	}
+	public Servo(float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle,float degreePerSecond){
 		this.minAngle = minAngle;
 		this.maxAngle = maxAngle;
 		this.minAngleDutyCycle = minAngleDutyCycle;
@@ -79,7 +86,11 @@ public class Servo extends PWMControllable {
 		controller.setDutyCycle(this, dc);
 	}
 	
-	public void rotateToAngle(float angle){
-		// TODO: fare i calcoli in base ai dati del motore e settare il duty cycle di conseguenza
+	public void rotateToAngle(float angle) throws IOException {
+		float targetAngle,rotationRangePercent,dutyCycle;
+		targetAngle = Math.min(Math.max(minAngle,angle),maxAngle);
+		rotationRangePercent = (targetAngle-minAngle)/(maxAngle-minAngle);
+		dutyCycle = rotationRangePercent * (maxAngleDutyCycle-minAngleDutyCycle) + minAngleDutyCycle;
+		setDutyCycle(dutyCycle);
 	}
 }

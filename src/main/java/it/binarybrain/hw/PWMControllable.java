@@ -2,6 +2,7 @@ package it.binarybrain.hw;
 
 import java.io.IOException;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,7 +16,7 @@ public abstract class PWMControllable {
 	@Id @GeneratedValue
 	protected Long id;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	protected PWMController controller;
 	
 	abstract public void setDutyCycle(float dc) throws IOException;

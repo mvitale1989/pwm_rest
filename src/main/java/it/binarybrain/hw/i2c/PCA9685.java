@@ -4,9 +4,9 @@ import it.binarybrain.hw.PWMControllable;
 import it.binarybrain.hw.Servo;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -39,6 +39,7 @@ public class PCA9685 extends I2CPWMController {
 	static final int BIT_INVRT = 0x10;
 	static final int BIT_OUTDRV = 0x04;
 	static final int MAX_PWM_STEPS = 4096;
+	static final int N_CHANNELS = 16;
 	
 	@Transient
 	I2CCommunicator communicator=null;
@@ -53,7 +54,9 @@ public class PCA9685 extends I2CPWMController {
 		if(i2cVirtualDevice==null)
 			throw new IllegalArgumentException("passed null as driver argument in PCA9685Driver constructor.");
 		communicator=new I2CCommunicator(i2cVirtualDevice);
-		channels=new ArrayList<PWMControllable>(16);
+		channels=new Vector<PWMControllable>(N_CHANNELS);
+		for(int i=0;i<N_CHANNELS;i++)
+			channels.add(null);
 	}
 	
 	public int getDeviceAddress(){ return deviceAddress; }
@@ -127,10 +130,8 @@ public class PCA9685 extends I2CPWMController {
 	
 	public void setChannelDutyCycle(int channel,float dc) throws IOException {
 		int offSteps;
-		dc = (float) Math.max(0, Math.min(dc, 100.0 ));
-		offSteps = Math.round( (dc * MAX_PWM_STEPS)/100 );
-		if(offSteps >= MAX_PWM_STEPS)
-			offSteps=MAX_PWM_STEPS-1;
+		dc = (float) Math.max(0, Math.min(dc, 1.0 ));
+		offSteps = Math.round( (dc * MAX_PWM_STEPS) );
 		setChannelPWMSteps(channel, 0, offSteps);
 	}
 	
@@ -159,7 +160,7 @@ public class PCA9685 extends I2CPWMController {
 			logger.info("Setting all channels pwm steps to 0-600...");
 			setAllPWMSteps(0,600);
 			Thread.sleep(2000);
-			for(int i=0;i<16;i++){
+			for(int i=0;i<N_CHANNELS;i++){
 				logger.info("Setting channel "+Integer.toString(i)+" pwm steps to 0-150...");
 				this.setChannelPWMSteps(i, 0, 150);
 				Thread.sleep(100);
