@@ -35,3 +35,13 @@ run {
 	systemProperty "java.library.path", "libs"
 	systemProperty "log4j.configurationFile", "resources/main/log4j2.xml"
 }
+
+//execute servo tuner
+task servotuner(type:JavaExec){
+	workingDir = 'build'
+	main = "it.binarybrain.hw.ServoTuner"
+	classpath = sourceSets.main.runtimeClasspath
+	standardInput = System.in
+	systemProperty "java.library.path", "libs"
+	systemProperty "log4j.configurationFile", "resources/main/log4j2.xml"
+}
