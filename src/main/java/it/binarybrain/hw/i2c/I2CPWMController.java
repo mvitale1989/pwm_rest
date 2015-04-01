@@ -3,16 +3,15 @@ package it.binarybrain.hw.i2c;
 import it.binarybrain.hw.PWMController;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class I2CPWMController extends PWMController {
-	@Id
+	//@Id
 	protected int deviceAddress;
-	@Id
+	//@Id
 	protected String i2cVirtualDevice;
 	
 	public I2CPWMController(){}

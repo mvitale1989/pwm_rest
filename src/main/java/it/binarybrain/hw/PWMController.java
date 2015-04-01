@@ -3,6 +3,7 @@ package it.binarybrain.hw;
 import java.io.IOException;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,7 +17,7 @@ public abstract class PWMController {
 	@Id @GeneratedValue
 	protected Long id;
 	
-	@OneToMany(mappedBy="controller")
+	@OneToMany(mappedBy="controller",cascade=CascadeType.ALL)
 	protected List<PWMControllable> channels;
 	
 	abstract public void addPWMControllable(PWMControllable device,int channel) throws IOException;

@@ -1,6 +1,5 @@
 package it.binarybrain.tmp;
 
-import it.binarybrain.hw.Servo;
 import it.binarybrain.hw.i2c.I2CCommunicator;
 import it.binarybrain.hw.i2c.I2CDriver;
 import it.binarybrain.hw.i2c.PCA9685;
@@ -33,6 +32,13 @@ public class PCA9685Tester {
 			logger.info("STARTING I2C AND PCA9685 TESTS");
 			logger.info("Instantiating PCA9685 device on bus "+i2cVirtualDevice+", on address "+Integer.toHexString(i2cDeviceAddress)+"...");
 			pca9685=new PCA9685(i2cVirtualDevice,i2cDeviceAddress);
+			logger.info("TESTING PERSISTENCE");
+			savePCA(pca9685);
+			List<PCA9685> pcas = getPCA9685s();
+			logger.info("PCAs contained ");
+			for(PCA9685 pca: pcas){
+				logger.info(pca.toString());
+			}
 			logger.info("initializing PCA9685 driver for device at address 0x"+Integer.toHexString(i2cDeviceAddress)+"...");
 			pca9685.init();
 			logger.info("setting PCA9685 frequency to 50Hz...");
@@ -50,25 +56,20 @@ public class PCA9685Tester {
 				Integer value=it.next();
 				logger.info("Address "+Integer.toHexString(value)+", contents: "+memory.get(value));
 			}
-			logger.info("TESTING SUCCESSFUL");
-			logger.info("TESTING PERSISTENCE");
-			savePCA(pca9685);
-			List<PCA9685> pcas = getPCA9685s();
-			logger.info("PCAs contained ");
-			for(PCA9685 pca: pcas){
-				logger.info(pca.toString());
-			}
-			
+			logger.info("TESTING SUCCESSFUL");			
 		}catch(IllegalStateException e){
 			e.printStackTrace();
 		}catch(IOException e){
 			e.printStackTrace();
+		}catch(Exception e){
+			logger.fatal("UNTRACKED EXCEPTION! Printing stack trace!");
+			e.printStackTrace();
+			logger.fatal("Stack trace end.");
 		}
+		I2CDriver.getInstance().signalExitToAll();
 		em.close();
 		emf.close();
-		I2CDriver.getInstance().signalExitToAll();
 	}
-	
 
 	public static void savePCA(PCA9685 pca9685){
 		logger.info("SAVING CONFIGURATION");
@@ -89,22 +90,7 @@ public class PCA9685Tester {
 		List<PCA9685> result = null;
 		em.getTransaction().begin();
 		try{
-			TypedQuery<PCA9685> tq = em.createQuery("SELECT a from PCA9685s a",PCA9685.class);
-			result = tq.getResultList();
-			em.getTransaction().commit();
-		}catch(PersistenceException e){
-			e.printStackTrace();
-			em.getTransaction().rollback();
-			result=null;
-		}
-		return result;
-	}
-	
-	public static List<Servo> getServos(){
-		List<Servo> result = null;
-		em.getTransaction().begin();
-		try{
-			TypedQuery<Servo> tq = em.createQuery("SELECT a from Servos a",Servo.class);
+			TypedQuery<PCA9685> tq = em.createQuery("SELECT a from PCA9685 a",PCA9685.class);
 			result = tq.getResultList();
 			em.getTransaction().commit();
 		}catch(PersistenceException e){

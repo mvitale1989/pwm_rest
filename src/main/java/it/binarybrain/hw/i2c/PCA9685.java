@@ -47,6 +47,7 @@ public class PCA9685 extends I2CPWMController {
 	@Transient
 	Logger logger = LogManager.getLogger(PCA9685.class);
 
+	public PCA9685(){}
 	public PCA9685(String i2cVirtualDevice,int deviceAddress) throws IOException {
 		super(i2cVirtualDevice,deviceAddress);
 		if(i2cVirtualDevice==null)
