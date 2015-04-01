@@ -1,5 +1,7 @@
 package it.binarybrain.hw;
 
+import java.io.IOException;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -15,13 +17,21 @@ public class Servo extends PWMControllable {
 	
 	public Servo(){}
 	public Servo(PWMController controller){ this.controller = controller; }
-
-	public PWMController getController() {
-		return controller;
-	}
-
-	public void setController(PWMController controller) {
+	public Servo(PWMController controller,Servo servo){
 		this.controller = controller;
+		this.minAngle = servo.getMinAngle();
+		this.maxAngle = servo.getMaxAngle();
+		this.minAngleDutyCycle = servo.getMinAngleDutyCycle();
+		this.maxAngleDutyCycle = servo.getMaxAngleDutyCycle();
+		this.degreePerSecond = servo.getDegreePerSecond();
+	}
+	public Servo(PWMController controller,float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle,float degreePerSecond){
+		this.controller = controller;
+		this.minAngle = minAngle;
+		this.maxAngle = maxAngle;
+		this.minAngleDutyCycle = minAngleDutyCycle;
+		this.maxAngleDutyCycle = maxAngleDutyCycle;
+		this.degreePerSecond = degreePerSecond;
 	}
 
 	public Float getMinAngle() {
@@ -65,12 +75,11 @@ public class Servo extends PWMControllable {
 	}
 	
 	@Override
-	public void setDutyCycle(float dc) {
-		// TODO Auto-generated method stub
-		// TODO DA FAREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+	public void setDutyCycle(float dc) throws IOException {
+		controller.setDutyCycle(this, dc);
 	}
 	
 	public void rotateToAngle(float angle){
-		// TODO DA FAREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+		// TODO: fare i calcoli in base ai dati del motore e settare il duty cycle di conseguenza
 	}
 }

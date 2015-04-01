@@ -1,5 +1,7 @@
 package it.binarybrain.hw;
 
+import java.io.IOException;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,10 +17,16 @@ public abstract class PWMControllable {
 	
 	@ManyToOne
 	protected PWMController controller;
-	abstract public void setDutyCycle(float dc);
 	
-	public void setController(PWMController controller){ this.controller = controller; }
-	public PWMController getController(){ return controller; }
+	abstract public void setDutyCycle(float dc) throws IOException;
+		
+	public PWMController getController(){
+		return controller;
+	}
+	
+	public void setController(PWMController controller) {
+		this.controller = controller;
+	}
 	
 	public Long getId() {
 		return id;

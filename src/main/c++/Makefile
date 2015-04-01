@@ -6,13 +6,13 @@ ARTIFACT=$(TARGET_DIR)/libbbi2c.so
 all: header library
 
 library: $(ARTIFACT)
-$(ARTIFACT): it_binarybrain_hw_i2c_I2CDriver.cpp
+$(ARTIFACT): it_binarybrain_hw_i2c_I2CBusDriver.cpp
 	mkdir -p $(TARGET_DIR)
-	g++ -fPIC -shared -I$(JHOME)/include -I$(JHOME)/include/linux it_binarybrain_hw_i2c_I2CDriver.cpp -o $(ARTIFACT)
+	g++ -fPIC -shared -I$(JHOME)/include -I$(JHOME)/include/linux it_binarybrain_hw_i2c_I2CBusDriver.cpp -o $(ARTIFACT)
 
-header: it_binarybrain_hw_i2c_I2CDriver.h
-it_binarybrain_hw_i2c_I2CDriver.h: ../../../build/classes/main/it/binarybrain/hw/i2c/I2CDriver.class
-	javah -classpath ../../../build/classes/main -d . it.binarybrain.hw.i2c.I2CDriver
+header: it_binarybrain_hw_i2c_I2CBusDriver.h
+it_binarybrain_hw_i2c_I2CBusDriver.h: ../../../build/classes/main/it/binarybrain/hw/i2c/I2CBusDriver.class
+	javah -classpath ../../../build/classes/main -d . it.binarybrain.hw.i2c.I2CBusDriver
 
 
 clean:

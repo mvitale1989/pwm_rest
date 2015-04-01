@@ -13,16 +13,28 @@ import org.apache.logging.log4j.Logger;
 
 public class I2CCommunicator {
 
-	private I2CDriver driver=null;
+	private String i2cVirtualDevice;
 	private long waitForResponseTimeoutMs=1000;
 	BlockingQueue<I2CResponse> responses=new LinkedBlockingQueue<I2CResponse>();
 	Logger logger= LogManager.getLogger(I2CCommunicator.class);
 
-	public I2CCommunicator(I2CDriver driverArg){
-		if(driverArg==null)
+	public I2CCommunicator(String i2cVirtualDevice){
+		if(i2cVirtualDevice==null)
 			throw new IllegalArgumentException("passed null as I2CCommunicator driver argument.");
-		driver=driverArg;
+		this.i2cVirtualDevice = i2cVirtualDevice;
 		logger.trace("communicator instantiated.");
+	}
+
+	public String getI2cVirtualDevice(){
+		return i2cVirtualDevice;
+	}
+	
+	public void setI2cVirtualDevice(String i2cVirtualDevice){
+		this.i2cVirtualDevice = i2cVirtualDevice;
+	}
+	
+	public I2CBusDriver getDriver(){
+		return I2CDriver.getInstance().getDriver(i2cVirtualDevice);
 	}
 
 	public int readByte(int i2cSlaveAddress,int i2cMemoryAddress) throws IOException{
@@ -31,7 +43,7 @@ public class I2CCommunicator {
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_READ,i2cSlaveAddress,i2cMemoryAddress,0);
 		I2CResponse response=null;
 		logger.trace("request created. Queueing request to the driver.");
-		driver.queueRequest(request);
+		this.getDriver().queueRequest(request);
 		logger.info("readByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
 		try{
 			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);
@@ -52,7 +64,7 @@ public class I2CCommunicator {
 		I2CRequest request=new I2CRequest(this,I2CRequestType.I2CREQUEST_WRITE,i2cSlaveAddress,i2cMemoryAddress,value);
 		I2CResponse response=null;
 		logger.trace("request created. Queueing request to the driver.");
-		driver.queueRequest(request);
+		this.getDriver().queueRequest(request);
 		logger.info("writeByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
 		try{
 			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);
@@ -70,7 +82,7 @@ public class I2CCommunicator {
 		I2CRequest request = new I2CRequest(this,I2CRequestType.I2CREQUEST_REOPEN_DRIVER,0,0,0);
 		I2CResponse response = null;
 		logger.trace("request created. Queueing request to the driver.");
-		driver.queueRequest(request);
+		this.getDriver().queueRequest(request);
 		logger.info("writeByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
 		try{
 			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);
@@ -88,7 +100,7 @@ public class I2CCommunicator {
 		I2CRequest request = new I2CRequest(this,I2CRequestType.I2CREQUEST_CLOSE_DRIVER,0,0,0);
 		I2CResponse response = null;
 		logger.trace("request created. Queueing request to the driver.");
-		driver.queueRequest(request);
+		this.getDriver().queueRequest(request);
 		logger.info("writeByte request queued. Waiting for response. (timeout: "+Long.valueOf(waitForResponseTimeoutMs)+")");
 		try{
 			response=responses.poll(waitForResponseTimeoutMs,TimeUnit.MILLISECONDS);

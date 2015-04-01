@@ -12,13 +12,13 @@
 
 
 
-#ifndef _Included_it_binarybrain_hw_I2CDriver
-#define _Included_it_binarybrain_hw_I2CDriver
+#ifndef _Included_it_binarybrain_hw_I2CBusDriver
+#define _Included_it_binarybrain_hw_I2CBusDriver
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-JNIEXPORT jint JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeOpenDeviceFile
+JNIEXPORT jint JNICALL Java_it_binarybrain_hw_i2c_I2CBusDriver_nativeOpenDeviceFile
   (JNIEnv * env, jobject obj, jstring i2c_device_path){
 
 	//Bolierplate per l'accesso alle variabili istanza nativeExitCode e debug
@@ -46,7 +46,7 @@ JNIEXPORT jint JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeOpenDeviceFile
 
 
 
-JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeCloseDeviceFile
+JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CBusDriver_nativeCloseDeviceFile
   (JNIEnv * env, jobject obj){
 
 	//Bolierplate per l'accesso alle variabili istanza nativeExitCode, debug e i2cFileDescriptor
@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeCloseDeviceFil
 }
 
 
-JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeWriteByte
+JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CBusDriver_nativeWriteByte
   (JNIEnv * env, jobject obj, jbyte i2c_device_address, jbyte i2c_memory_address, jbyte value)
 {
 	//Bolierplate per l'accesso alle variabili istanza nativeExitCode, debug e i2cFileDescriptor
@@ -106,7 +106,7 @@ JNIEXPORT void JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeWriteByte
 }
 
 
-JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_i2c_I2CDriver_nativeReadByte
+JNIEXPORT jbyte JNICALL Java_it_binarybrain_hw_i2c_I2CBusDriver_nativeReadByte
   (JNIEnv * env, jobject obj, jbyte i2c_device_address, jbyte i2c_memory_address)
 {
 	//Bolierplate per l'accesso alle variabili istanza nativeExitCode, debug e i2cFileDescriptor

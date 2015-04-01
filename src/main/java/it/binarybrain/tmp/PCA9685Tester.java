@@ -25,24 +25,20 @@ public class PCA9685Tester {
 	private final static Logger logger = LogManager.getLogger(PCA9685Tester.class);
 	
 	public static void main(String[] args) {
-		boolean debug=true;
-		String i2cDevicePath="/dev/i2c-1";
+		String i2cVirtualDevice="/dev/i2c-1";
 		byte i2cDeviceAddress=(byte)0x40;
-		I2CDriver i2cDriver=null;
 		I2CCommunicator i2cCommunicator=null;
 		PCA9685 pca9685=null;
 		try{
-			logger.info("STARTING I2C AND PCA9685 TESTS.....");
-			logger.info("initializing new i2cDriver thread for the virtual device "+i2cDevicePath+"...");
-			i2cDriver=new I2CDriver(i2cDevicePath,debug);
-			logger.info("starting control thread...");
-			i2cDriver.start();
+			logger.info("STARTING I2C AND PCA9685 TESTS");
+			logger.info("Instantiating PCA9685 device on bus "+i2cVirtualDevice+", on address "+Integer.toHexString(i2cDeviceAddress)+"...");
+			pca9685=new PCA9685(i2cVirtualDevice,i2cDeviceAddress);
 			logger.info("initializing PCA9685 driver for device at address 0x"+Integer.toHexString(i2cDeviceAddress)+"...");
-			pca9685=new PCA9685(i2cDriver,i2cDeviceAddress);
+			pca9685.init();
 			logger.info("setting PCA9685 frequency to 50Hz...");
 			pca9685.setPWMFrequency(50);
 			logger.info("instantiating extra communicator for further testing...");
-			i2cCommunicator = new I2CCommunicator(i2cDriver);
+			i2cCommunicator = new I2CCommunicator(i2cVirtualDevice);
 			logger.info("testing driver reopen command...");
 			i2cCommunicator.requestReopen();
 			logger.info("starting PCA9685Driver testing routine...");
@@ -68,9 +64,9 @@ public class PCA9685Tester {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		i2cDriver.signalExit();
 		em.close();
 		emf.close();
+		I2CDriver.getInstance().signalExitToAll();
 	}
 	
 
