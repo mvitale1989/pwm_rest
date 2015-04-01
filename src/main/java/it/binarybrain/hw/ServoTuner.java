@@ -17,9 +17,11 @@ public class ServoTuner {
 			Servo servo = new Servo(0,180,0,1);
 			pca9685.addPWMControllable(servo,servoChannel);
 			pca9685.init();
+			pca9685.setPWMFrequency(50);
 			System.out.println("Welcome to servo tester!");
 			System.out.println("This program helps you tune the servo parameters for later use: set an arbitrary duty-cycle value to "+
 					"find out the min and max duty cycle supported by your motor, write them down and then use them in your next configuration.");
+			System.out.println("Common values: 0.029 for min position, 0.124 for max position.");
 			dutyCycleTester(servo);
 		} catch (IOException e) {
 			e.printStackTrace();
