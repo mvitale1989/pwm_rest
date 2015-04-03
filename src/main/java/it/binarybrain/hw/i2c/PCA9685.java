@@ -61,7 +61,7 @@ public class PCA9685 extends I2CPWMController {
 	
 	public int getDeviceAddress(){ return deviceAddress; }
 	public void setDeviceAddress(int deviceAddress){ this.deviceAddress = deviceAddress; }
-	public I2CBusDriver getDriver(){ return communicator.getDriver(); }
+	public I2CBusDriver getDriver(){ return communicator!=null?communicator.getDriver():null; }
 	public void setI2cVirtualDevice(String i2cVirtualDevice){ communicator.setI2cVirtualDevice(i2cVirtualDevice); }
 	
 	

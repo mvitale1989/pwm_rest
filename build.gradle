@@ -9,6 +9,8 @@ repositories {
 }
 dependencies {
 	compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.17'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
 	compile 'org.apache.logging.log4j:log4j-core:2.2'
 	compile 'org.apache.logging.log4j:log4j-api:2.2'
 	compile 'org.slf4j:slf4j-log4j12:1.7.12'

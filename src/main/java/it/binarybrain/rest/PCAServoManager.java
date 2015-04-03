@@ -16,21 +16,21 @@ import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PCA9685Manager {
+public class PCAServoManager {
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("pwm_rest");
 	private static EntityManager em = emf.createEntityManager();
-	private static PCA9685Manager instance = new PCA9685Manager();
+	private static PCAServoManager instance = new PCAServoManager();
 	private Set<PCA9685> pca9685s;
 	private Logger logger = LogManager.getLogger(this.getClass());
 	
-	private PCA9685Manager(){
+	private PCAServoManager(){
 		logger.info("instantiating PCA9685Manager singleton...");
 		pca9685s = Collections.synchronizedSet(new HashSet<PCA9685>());
 		load();
 		logger.info("PCA9685Manager instantiated.");
 	}
 	
-	public static PCA9685Manager getInstance(){
+	public static PCAServoManager getInstance(){
 		return instance;
 	}
 	
