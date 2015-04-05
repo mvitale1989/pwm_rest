@@ -15,8 +15,8 @@ public class I2CCommunicator {
 
 	private String i2cVirtualDevice;
 	private long waitForResponseTimeoutMs=1000;
-	BlockingQueue<I2CResponse> responses=new LinkedBlockingQueue<I2CResponse>();
-	Logger logger = LogManager.getLogger(I2CCommunicator.class);
+	private BlockingQueue<I2CResponse> responses=new LinkedBlockingQueue<I2CResponse>();
+	private static Logger logger = LogManager.getLogger(I2CCommunicator.class);
 
 	public I2CCommunicator(String i2cVirtualDevice){
 		if(i2cVirtualDevice==null)

@@ -11,14 +11,16 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class PWMController {
 	@Id @GeneratedValue
-	protected Long id;
+	@Expose protected Long id;
 	
 	@OneToMany(mappedBy="controller",cascade=CascadeType.ALL)
-	protected List<PWMControllable> channels;
+	@Expose protected List<PWMControllable> channels;
 	
 	abstract public void addPWMControllable(PWMControllable device,int channel) throws IOException;
 	abstract public void removePWMControllable(PWMControllable device) throws IOException;

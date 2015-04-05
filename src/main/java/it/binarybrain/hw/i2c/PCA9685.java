@@ -19,34 +19,34 @@ import org.apache.logging.log4j.Logger;
 @Table(name="PCA9685s")
 public class PCA9685 extends I2CPWMController {
 
-	static final int REG_MODE1 = 0x00;
-	static final int REG_MODE2 = 0x01;
-	static final int REG_SUBADR1 = 0x02;
-	static final int REG_SUBADR2 = 0x03;
-	static final int REG_SUBADR3 = 0x04;
-	static final int REG_PRESCALE = 0xFE;
-	static final int REG_LED0_ON_L = 0x06;
-	static final int REG_LED0_ON_H = 0x07;
-	static final int REG_LED0_OFF_L = 0x08;
-	static final int REG_LED0_OFF_H = 0x09;
-	static final int REG_ALL_LED_ON_L = 0xFA;
-	static final int REG_ALL_LED_ON_H = 0xFB;
-	static final int REG_ALL_LED_OFF_L = 0xFC;
-	static final int REG_ALL_LED_OFF_H = 0xFD;
-	static final int BIT_RESTART = 0x80;
-	static final int BIT_SLEEP = 0x10;
-	static final int BIT_ALLCALL = 0x01;
-	static final int BIT_INVRT = 0x10;
-	static final int BIT_OUTDRV = 0x04;
-	static final int MAX_PWM_STEPS = 4096;
-	static final int N_CHANNELS = 16;
+	public static final int REG_MODE1 = 0x00;
+	public static final int REG_MODE2 = 0x01;
+	public static final int REG_SUBADR1 = 0x02;
+	public static final int REG_SUBADR2 = 0x03;
+	public static final int REG_SUBADR3 = 0x04;
+	public static final int REG_PRESCALE = 0xFE;
+	public static final int REG_LED0_ON_L = 0x06;
+	public static final int REG_LED0_ON_H = 0x07;
+	public static final int REG_LED0_OFF_L = 0x08;
+	public static final int REG_LED0_OFF_H = 0x09;
+	public static final int REG_ALL_LED_ON_L = 0xFA;
+	public static final int REG_ALL_LED_ON_H = 0xFB;
+	public static final int REG_ALL_LED_OFF_L = 0xFC;
+	public static final int REG_ALL_LED_OFF_H = 0xFD;
+	public static final int BIT_RESTART = 0x80;
+	public static final int BIT_SLEEP = 0x10;
+	public static final int BIT_ALLCALL = 0x01;
+	public static final int BIT_INVRT = 0x10;
+	public static final int BIT_OUTDRV = 0x04;
+	public static final int MAX_PWM_STEPS = 4096;
+	public static final int N_CHANNELS = 16;
 	
 	@Transient
-	I2CCommunicator communicator=null;
+	private I2CCommunicator communicator=null;
 	@Transient
-	boolean initialized=false;
+	private Boolean initialized=false;
 	@Transient
-	Logger logger = LogManager.getLogger(PCA9685.class);
+	private Logger logger = LogManager.getLogger(PCA9685.class);
 
 	public PCA9685(){}
 	public PCA9685(String i2cVirtualDevice,int deviceAddress) throws IOException {
@@ -59,8 +59,6 @@ public class PCA9685 extends I2CPWMController {
 			channels.add(null);
 	}
 	
-	public int getDeviceAddress(){ return deviceAddress; }
-	public void setDeviceAddress(int deviceAddress){ this.deviceAddress = deviceAddress; }
 	public I2CBusDriver getDriver(){ return communicator!=null?communicator.getDriver():null; }
 	public void setI2cVirtualDevice(String i2cVirtualDevice){ communicator.setI2cVirtualDevice(i2cVirtualDevice); }
 	

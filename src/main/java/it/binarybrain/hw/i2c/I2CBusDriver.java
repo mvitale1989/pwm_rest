@@ -20,7 +20,7 @@ public class I2CBusDriver extends Thread {
 	private int nativeExitCode=0;
 	private boolean deviceFileIsOpen=false;
 	private boolean debug=false;
-	private Logger logger=LogManager.getLogger(I2CBusDriver.class);
+	private static Logger logger=LogManager.getLogger(I2CBusDriver.class);
 	
 	private final long waitForRequestsTimeoutMs=5000;
 	private final long waitForReopenMs=200;

@@ -9,18 +9,20 @@ import javax.persistence.Transient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(name="Servos")
 public class Servo extends PWMControllable {
 	
-	private Float minAngle;
-	private Float maxAngle;
-	private Float minAngleDutyCycle;
-	private Float maxAngleDutyCycle;
-	private Float degreePerSecond;
+	@Expose private Float minAngle;
+	@Expose private Float maxAngle;
+	@Expose private Float minAngleDutyCycle;
+	@Expose private Float maxAngleDutyCycle;
+	@Expose private Float degreePerSecond;
 	
 	@Transient
-	Logger logger = LogManager.getLogger(Servo.class);
+	private static Logger logger = LogManager.getLogger(Servo.class);
 	
 	public Servo(){}
 	public Servo(Servo servo){

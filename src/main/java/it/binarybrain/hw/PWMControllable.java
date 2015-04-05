@@ -10,25 +10,19 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Inheritance( strategy = InheritanceType.JOINED )
 public abstract class PWMControllable {
 	@Id @GeneratedValue
-	protected Long id;
+	@Expose protected Long id;
 	
 	@ManyToOne(cascade=CascadeType.PERSIST)
 	protected PWMController controller;
 	
 	abstract public void setDutyCycle(float dc) throws IOException;
-		
-	public PWMController getController(){
-		return controller;
-	}
-	
-	public void setController(PWMController controller) {
-		this.controller = controller;
-	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -36,4 +30,14 @@ public abstract class PWMControllable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	public PWMController getController() {
+		return controller;
+	}
+
+	public void setController(PWMController controller) {
+		this.controller = controller;
+	}
+
+	
 }
