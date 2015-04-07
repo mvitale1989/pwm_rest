@@ -28,4 +28,17 @@ public abstract class PWMController {
 	abstract public void setDutyCycle(PWMControllable device,float dc) throws IOException;
 	abstract public void setFrequency(PWMControllable device,float hertz) throws IOException;
 	abstract public void setGlobalFrequency(float hertz) throws IOException;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public List<PWMControllable> getChannels() {
+		return channels;
+	}
+	public void setChannels(List<PWMControllable> channels) {
+		this.channels = channels;
+	}
+	
 }
