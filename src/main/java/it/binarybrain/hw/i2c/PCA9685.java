@@ -48,7 +48,11 @@ public class PCA9685 extends I2CPWMController {
 	@Transient
 	private Logger logger = LogManager.getLogger(PCA9685.class);
 
-	public PCA9685(){}
+	public PCA9685(){
+		channels=new Vector<PWMControllable>(N_CHANNELS);
+		for(int i=0;i<N_CHANNELS;i++)
+			channels.add(null);
+	}
 	public PCA9685(String i2cVirtualDevice,int deviceAddress) throws IOException {
 		super(i2cVirtualDevice,deviceAddress);
 		if(i2cVirtualDevice==null)
@@ -235,11 +239,13 @@ public class PCA9685 extends I2CPWMController {
 	@Override
 	public String toString(){
 		StringBuilder output=new StringBuilder();
-		output.append("PCA9685 at address "+Integer.toString(getDeviceAddress())+". Channels registered: ");
-		for(int i=0;i<channels.size();i++){
-			if(channels.get(i)!=null)
-				output.append(Integer.toString(i)+" (id: "+Long.toString( ((Servo)channels.get(i)).getId() )+")");
-		}
+		try{
+			output.append("PCA9685 at address "+Integer.toString(getDeviceAddress())+". Channels registered: ");
+			for(int i=0;i<channels.size();i++){
+				if(channels.get(i)!=null)
+					output.append(Integer.toString(i)+" (id: "+Long.toString( ((Servo)channels.get(i)).getId() )+")");
+			}
+		}catch(NullPointerException e){}
 		return output.toString();
 	}
 	

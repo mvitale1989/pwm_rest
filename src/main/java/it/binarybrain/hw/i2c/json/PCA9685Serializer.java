@@ -14,19 +14,20 @@ import com.google.gson.reflect.TypeToken;
 
 public class PCA9685Serializer implements JsonSerializer<PCA9685>{
 
+	public static Type pwmControllableType = new TypeToken<PWMControllable>(){}.getType() ;
+	
 	@Override
 	public JsonElement serialize(PCA9685 src, Type typeOfSrc, 
 			JsonSerializationContext context) {
 		JsonObject obj = new JsonObject();
 		JsonArray arr = new JsonArray();
 		PWMControllableSerializer pcs = new PWMControllableSerializer();
-		Type pct = new TypeToken<PWMControllable>(){}.getType() ;
 		obj.addProperty("id", src.getId());
 		obj.addProperty("address", src.getDeviceAddress());
 		obj.addProperty("virtualDevice", src.getI2cVirtualDevice());
 		for(PWMControllable channel: src.getChannels()){
 			if(channel!=null)
-				arr.add( pcs.serialize(channel, pct, context));
+				arr.add( pcs.serialize(channel, pwmControllableType, context));
 		}
 		obj.add("channels", arr);
 		return obj;

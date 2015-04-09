@@ -3,6 +3,7 @@ package it.binarybrain.hw.i2c.json;
 import it.binarybrain.hw.PWMControllable;
 import it.binarybrain.hw.Servo;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 import com.google.gson.JsonElement;
@@ -19,6 +20,9 @@ public class PWMControllableSerializer implements JsonSerializer<PWMControllable
 		//common properties
 		obj.addProperty("id", src.getId());
 		obj.addProperty("controllerId", src.getController().getId());
+		try{
+			obj.addProperty( "channelNumber", src.getController().getPWMControllableChannel(src) );
+		}catch(IOException e){}
 		//subclass specific properties
 		if(src instanceof it.binarybrain.hw.Servo){
 			Servo servo = (Servo) src;

@@ -39,8 +39,21 @@ public class PCAServoManager {
 	}
 	
 	public void save(){
-		logger.info("SAVE CALLED");
+		/*logger.info("saving current devices to database.");
+		em.getTransaction().begin();
+		try{
+			for(PCA9685 pca: pca9685s){
+				em.merge(pca);
+				em.detach(pca);
+			}
+			em.getTransaction().commit();
+			logger.info("devices saved successfully.");
+		}catch(PersistenceException e){
+			e.printStackTrace();
+			em.getTransaction().rollback();
+		}*/
 	}
+	
 	public void load(){
 		logger.info("loading configured devices from database.");
 		pca9685s.clear();
@@ -59,7 +72,17 @@ public class PCAServoManager {
 			em.getTransaction().rollback();
 			result=null;
 		}
-
+	}
+	
+	public PCA9685 getById(Long id){
+    	PCA9685 device=null;
+    	for(PCA9685 pca: pca9685s){
+    		if(pca.getId() == id){
+    			device=pca;
+    			break;
+    		}
+    	}
+		return device;
 	}
 	
 }
