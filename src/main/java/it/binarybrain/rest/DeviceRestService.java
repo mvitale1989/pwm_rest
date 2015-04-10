@@ -18,6 +18,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -58,11 +59,12 @@ public class DeviceRestService {
     @POST
     @Consumes("application/json")
     public String setPCA(String body){
-    	StringBuilder response = new StringBuilder();
-    	response.append("BODY: "+body);
+    	//StringBuilder response = new StringBuilder();
+    	//response.append("BODY: "+body);
     	PCA9685 pca = gson.fromJson(body, PCA9685.class);
-    	response.append(pca.toString());
-    	return response.toString();
+    	PCAServoManager.getInstance().getPCA9685s().add(pca);
+    	//response.append(pca.toString());
+    	return Response.ok().build().toString();
     }
 
 }

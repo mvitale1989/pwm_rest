@@ -20,6 +20,7 @@ public class Servo extends PWMControllable {
 	@Expose private Float minAngleDutyCycle;
 	@Expose private Float maxAngleDutyCycle;
 	@Expose private Float degreePerSecond;
+	@Expose private Boolean clockwiseRotation;
 	
 	@Transient
 	private static Logger logger = LogManager.getLogger(Servo.class);
@@ -31,16 +32,18 @@ public class Servo extends PWMControllable {
 		this.minAngleDutyCycle = servo.getMinAngleDutyCycle();
 		this.maxAngleDutyCycle = servo.getMaxAngleDutyCycle();
 		this.degreePerSecond = servo.getDegreePerSecond();
+		this.clockwiseRotation = servo.getClockwiseRotation();
 	}
 	public Servo(float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle){
-		this(minAngle,maxAngle,minAngleDutyCycle,maxAngleDutyCycle,0);
+		this(minAngle,maxAngle,minAngleDutyCycle,maxAngleDutyCycle,0,true);
 	}
-	public Servo(float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle,float degreePerSecond){
+	public Servo(float minAngle,float maxAngle,float minAngleDutyCycle,float maxAngleDutyCycle,float degreePerSecond,boolean clockwiseRotation){
 		this.minAngle = minAngle;
 		this.maxAngle = maxAngle;
 		this.minAngleDutyCycle = minAngleDutyCycle;
 		this.maxAngleDutyCycle = maxAngleDutyCycle;
 		this.degreePerSecond = degreePerSecond;
+		this.clockwiseRotation = clockwiseRotation;
 	}
 
 	public Float getMinAngle() {
@@ -94,5 +97,11 @@ public class Servo extends PWMControllable {
 		rotationRangePercent = (targetAngle-minAngle)/(maxAngle-minAngle);
 		dutyCycle = rotationRangePercent * (maxAngleDutyCycle-minAngleDutyCycle) + minAngleDutyCycle;
 		setDutyCycle(dutyCycle);
+	}
+	public Boolean getClockwiseRotation() {
+		return clockwiseRotation;
+	}
+	public void setClockwiseRotation(Boolean clockwiseRotation) {
+		this.clockwiseRotation = clockwiseRotation;
 	}
 }

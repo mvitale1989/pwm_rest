@@ -39,7 +39,7 @@ public class PCAServoManager {
 	}
 	
 	public void save(){
-		/*logger.info("saving current devices to database.");
+		logger.info("saving current devices to database.");
 		em.getTransaction().begin();
 		try{
 			for(PCA9685 pca: pca9685s){
@@ -51,7 +51,7 @@ public class PCAServoManager {
 		}catch(PersistenceException e){
 			e.printStackTrace();
 			em.getTransaction().rollback();
-		}*/
+		}
 	}
 	
 	public void load(){

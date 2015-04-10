@@ -31,6 +31,8 @@ public class ServoDeserializer implements JsonDeserializer<Servo> {
 				servo.setMinAngleDutyCycle( obj.get("minAngleDutyCycle").getAsFloat() );
 			if( obj.has("maxAngleDutyCycle") )
 				servo.setMaxAngleDutyCycle( obj.get("maxAngleDutyCycle").getAsFloat() );
+			if( obj.has("clockwiseRotation") )
+				servo.setClockwiseRotation( obj.get("clockwiseRotation").getAsBoolean() );
 		}else{
 			servo = null;
 		}
